@@ -43,9 +43,10 @@ export function CommentForm({
     <form onSubmit={handleSubmit} className="space-y-2">
       <Textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={(e) => setContent(e.target.value.slice(0, 1000))}
         placeholder={placeholder}
         className={compact ? "min-h-[60px] text-sm" : "min-h-[80px]"}
+        maxLength={1000}
         required
       />
       <div className="flex justify-end gap-2">

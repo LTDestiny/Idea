@@ -122,8 +122,8 @@ export default function IdeaDetailPage() {
           await supabase.functions.invoke("notify-idea-owner", {
             body: { join_request_id: result.data.id },
           });
-        } catch {
-          // Silently fail — don't block user flow
+        } catch (err) {
+          console.error("Failed to notify idea owner:", err);
         }
       }
 
