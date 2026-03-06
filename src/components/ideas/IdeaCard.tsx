@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Link from "next/link";
 import {
   Card,
@@ -13,15 +14,17 @@ interface IdeaCardProps {
   idea: IdeaWithDetails;
 }
 
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
 function formatDate(dateStr: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(dateStr));
+  return dateFormatter.format(new Date(dateStr));
 }
 
-export function IdeaCard({ idea }: IdeaCardProps) {
+export const IdeaCard = memo(function IdeaCard({ idea }: IdeaCardProps) {
   const commentCount = idea.comments?.[0]?.count || 0;
   const joinCount = idea.join_requests?.[0]?.count || 0;
 
@@ -65,4 +68,4 @@ export function IdeaCard({ idea }: IdeaCardProps) {
       </Card>
     </Link>
   );
-}
+});

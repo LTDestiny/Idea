@@ -1,10 +1,12 @@
+import { memo } from "react";
+
 interface SkillTagProps {
   skill: string;
   onRemove?: () => void;
   variant?: "default" | "suggestion";
 }
 
-export function SkillTag({
+export const SkillTag = memo(function SkillTag({
   skill,
   onRemove,
   variant = "default",
@@ -30,4 +32,4 @@ export function SkillTag({
       )}
     </span>
   );
-}
+});

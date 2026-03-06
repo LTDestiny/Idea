@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   CATEGORY_COLORS,
   CATEGORY_LABELS,
@@ -9,7 +10,10 @@ interface CategoryBadgeProps {
   className?: string;
 }
 
-export function CategoryBadge({ category, className }: CategoryBadgeProps) {
+export const CategoryBadge = memo(function CategoryBadge({
+  category,
+  className,
+}: CategoryBadgeProps) {
   const colors = CATEGORY_COLORS[category];
   const label = CATEGORY_LABELS[category];
 
@@ -21,4 +25,4 @@ export function CategoryBadge({ category, className }: CategoryBadgeProps) {
       {label}
     </span>
   );
-}
+});

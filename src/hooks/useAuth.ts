@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types/database.types";
@@ -9,20 +9,23 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
+    // Use getSession() instead of getUser() — reads from local storage instantly,
+    // no network call. Middleware already validates tokens for protected routes.
     const getUser = async () => {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
+        data: { session },
+      } = await supabase.auth.getSession();
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
 
-      if (user) {
+      if (currentUser) {
         const { data } = await supabase
           .from("profiles")
           .select("*")
-          .eq("id", user.id)
+          .eq("id", currentUser.id)
           .single();
         setProfile(data);
       }
@@ -56,39 +59,41 @@ export function useAuth() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
-  };
+  const signInWithEmail = useCallback(
+    async (email: string, password: string) => {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      return { error };
+    },
+    [supabase],
+  );
 
-  const signUpWithEmail = async (
-    email: string,
-    password: string,
-    fullName: string,
-  ) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+  const signUpWithEmail = useCallback(
+    async (email: string, password: string, fullName: string) => {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    // Profile is created automatically by the database trigger handle_new_user()
+      // Profile is created automatically by the database trigger handle_new_user()
 
-    return { data, error };
-  };
+      return { data, error };
+    },
+    [supabase],
+  );
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
     window.location.href = "/";
-  };
+  }, [supabase]);
 
   return { user, profile, loading, signInWithEmail, signUpWithEmail, signOut };
 }

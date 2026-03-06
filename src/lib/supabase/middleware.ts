@@ -29,10 +29,6 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   // Protected routes
   const protectedPaths = ["/ideas/new", "/profile"];
   const isProtectedPath = protectedPaths.some((path) =>
@@ -42,12 +38,23 @@ export async function updateSession(request: NextRequest) {
   // Check edit routes: /ideas/[id]/edit
   const isEditPath = /^\/ideas\/[^/]+\/edit/.test(request.nextUrl.pathname);
 
-  if ((isProtectedPath || isEditPath) && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirect", request.nextUrl.pathname);
-    url.searchParams.set("message", "Please sign in to continue");
-    return NextResponse.redirect(url);
+  // Only call getUser() (network request) for protected routes
+  // For public routes, just refresh session via getSession() (reads from cookie, no network call)
+  if (isProtectedPath || isEditPath) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("redirect", request.nextUrl.pathname);
+      url.searchParams.set("message", "Please sign in to continue");
+      return NextResponse.redirect(url);
+    }
+  } else {
+    // For public routes: refresh session token from cookie (fast, no network call)
+    await supabase.auth.getSession();
   }
 
   return supabaseResponse;

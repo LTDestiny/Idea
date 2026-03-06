@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,7 +16,7 @@ export default function EditIdeaPage() {
   const { user, loading: authLoading } = useAuth();
   const [idea, setIdea] = useState<Idea | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     const fetchIdea = async () => {
@@ -51,24 +51,30 @@ export default function EditIdeaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading, loading, idea, user]);
 
-  const handleSubmit = async (data: IdeaFormData) => {
-    const { error } = await supabase
-      .from("ideas")
-      .update({
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        looking_for: data.looking_for || null,
-      })
-      .eq("id", ideaId);
+  const isOwner =
+    !authLoading && !loading && idea && user && user.id === idea.creator_id;
 
-    if (!error) {
-      toast.success("Idea updated!");
-      router.push(`/ideas/${ideaId}`);
-    }
+  const handleSubmit = useCallback(
+    async (data: IdeaFormData) => {
+      const { error } = await supabase
+        .from("ideas")
+        .update({
+          title: data.title,
+          description: data.description,
+          category: data.category,
+          looking_for: data.looking_for || null,
+        })
+        .eq("id", ideaId);
 
-    return { error };
-  };
+      if (!error) {
+        toast.success("Idea updated!");
+        router.push(`/ideas/${ideaId}`);
+      }
+
+      return { error };
+    },
+    [supabase, ideaId, router],
+  );
 
   if (loading || authLoading) {
     return (
@@ -83,7 +89,7 @@ export default function EditIdeaPage() {
     );
   }
 
-  if (!idea) return null;
+  if (!idea || !isOwner) return null;
 
   return (
     <div className="container mx-auto px-4 py-8">

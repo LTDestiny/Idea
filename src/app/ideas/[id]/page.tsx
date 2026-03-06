@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,16 +25,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { UserCircle, MessageSquare, Users } from "lucide-react";
+import { UserCircle, MessageSquare, Users, Crown } from "lucide-react";
 import { toast } from "sonner";
 import type { Idea, Profile } from "@/lib/types/database.types";
 
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
 function formatDate(dateStr: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(dateStr));
+  return dateFormatter.format(new Date(dateStr));
 }
 
 export default function IdeaDetailPage() {
@@ -57,7 +59,7 @@ export default function IdeaDetailPage() {
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     const fetchIdea = async () => {
@@ -81,7 +83,7 @@ export default function IdeaDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ideaId]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     const { error } = await supabase.from("ideas").delete().eq("id", ideaId);
 
     if (error) {
@@ -90,41 +92,48 @@ export default function IdeaDetailPage() {
       toast.success("Idea deleted");
       router.push("/");
     }
-  };
+  }, [supabase, ideaId, router]);
 
-  const handleAddComment = async (content: string) => {
-    if (!user) return { error: new Error("Not authenticated") };
-    return addComment(content, user.id);
-  };
+  const handleAddComment = useCallback(
+    async (content: string) => {
+      if (!user) return { error: new Error("Not authenticated") };
+      return addComment(content, user.id);
+    },
+    [user, addComment],
+  );
 
-  const handleReplyComment = async (content: string, parentId: string) => {
-    if (!user) return { error: new Error("Not authenticated") };
-    return addComment(content, user.id, parentId);
-  };
+  const handleReplyComment = useCallback(
+    async (content: string, parentId: string) => {
+      if (!user) return { error: new Error("Not authenticated") };
+      return addComment(content, user.id, parentId);
+    },
+    [user, addComment],
+  );
 
-  const handleCreateJoinRequest = async (data: {
-    message: string;
-    relevant_skills: string[];
-  }) => {
-    if (!user) return { error: new Error("Not authenticated") };
+  const handleCreateJoinRequest = useCallback(
+    async (data: { message: string; relevant_skills: string[] }) => {
+      if (!user) return { error: new Error("Not authenticated") };
 
-    const result = await createRequest(data, user.id);
+      const result = await createRequest(data, user.id);
 
-    // Call edge function for email notification (fire & forget)
-    if (!result.error && result.data) {
-      try {
-        await supabase.functions.invoke("notify-idea-owner", {
-          body: { join_request_id: result.data.id },
-        });
-      } catch {
-        // Silently fail — don't block user flow
+      // Call edge function for email notification (fire & forget)
+      if (!result.error && result.data) {
+        try {
+          await supabase.functions.invoke("notify-idea-owner", {
+            body: { join_request_id: result.data.id },
+          });
+        } catch {
+          // Silently fail — don't block user flow
+        }
       }
-    }
 
-    return result;
-  };
+      return result;
+    },
+    [user, createRequest, supabase],
+  );
 
   const isOwner = user && idea && user.id === idea.creator_id;
+  const approvedMembers = requests.filter((r) => r.status === "approved");
 
   if (loading) {
     return (
@@ -183,9 +192,7 @@ export default function IdeaDetailPage() {
           {/* Looking for */}
           {idea.looking_for && (
             <div className="space-y-3 p-4 bg-muted/30 rounded-lg border">
-              <h3 className="text-sm font-semibold">
-                \uD83D\uDD0D Looking for:
-              </h3>
+              <h3 className="text-sm font-semibold">🔍 Looking for:</h3>
               <p className="text-sm whitespace-pre-wrap">{idea.looking_for}</p>
             </div>
           )}
@@ -230,6 +237,57 @@ export default function IdeaDetailPage() {
               onJoinClick={() => setJoinModalOpen(true)}
               onDeleteClick={() => setDeleteDialogOpen(true)}
             />
+          </div>
+
+          {/* Members list */}
+          <div className="p-4 border rounded-lg space-y-3">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Members ({1 + approvedMembers.length})
+            </h3>
+
+            <div className="space-y-2">
+              {/* Owner */}
+              <div className="flex items-center gap-2 p-2 rounded-md bg-muted/40">
+                <UserCircle className="h-7 w-7 text-muted-foreground flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate">
+                    {idea.profiles?.full_name || "Anonymous"}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {idea.profiles?.email}
+                  </p>
+                </div>
+                <span className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400 font-medium flex-shrink-0">
+                  <Crown className="h-3.5 w-3.5" />
+                  Owner
+                </span>
+              </div>
+
+              {/* Approved members */}
+              {approvedMembers.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/30"
+                >
+                  <UserCircle className="h-7 w-7 text-muted-foreground flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">
+                      {member.profiles?.full_name || "Anonymous"}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {member.profiles?.email}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              {approvedMembers.length === 0 && (
+                <p className="text-xs text-muted-foreground text-center py-1">
+                  No other members yet
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Join request management (owner only) */}

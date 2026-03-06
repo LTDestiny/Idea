@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type {
   IdeaWithDetails,
@@ -16,7 +16,7 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
   const [category, setCategory] = useState<IdeaCategory | "all">("all");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("newest");
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const fetchIdeas = useCallback(async () => {
     setLoading(true);
@@ -68,42 +68,51 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
     fetchIdeas();
   }, [fetchIdeas]);
 
-  const createIdea = async (data: IdeaFormData, creatorId: string) => {
-    const { data: idea, error } = await supabase
-      .from("ideas")
-      .insert({
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        looking_for: data.looking_for || null,
-        creator_id: creatorId,
-      })
-      .select()
-      .single();
+  const createIdea = useCallback(
+    async (data: IdeaFormData, creatorId: string) => {
+      const { data: idea, error } = await supabase
+        .from("ideas")
+        .insert({
+          title: data.title,
+          description: data.description,
+          category: data.category,
+          looking_for: data.looking_for || null,
+          creator_id: creatorId,
+        })
+        .select()
+        .single();
 
-    return { idea, error };
-  };
+      return { idea, error };
+    },
+    [supabase],
+  );
 
-  const updateIdea = async (id: string, data: IdeaFormData) => {
-    const { data: idea, error } = await supabase
-      .from("ideas")
-      .update({
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        looking_for: data.looking_for || null,
-      })
-      .eq("id", id)
-      .select()
-      .single();
+  const updateIdea = useCallback(
+    async (id: string, data: IdeaFormData) => {
+      const { data: idea, error } = await supabase
+        .from("ideas")
+        .update({
+          title: data.title,
+          description: data.description,
+          category: data.category,
+          looking_for: data.looking_for || null,
+        })
+        .eq("id", id)
+        .select()
+        .single();
 
-    return { idea, error };
-  };
+      return { idea, error };
+    },
+    [supabase],
+  );
 
-  const deleteIdea = async (id: string) => {
-    const { error } = await supabase.from("ideas").delete().eq("id", id);
-    return { error };
-  };
+  const deleteIdea = useCallback(
+    async (id: string) => {
+      const { error } = await supabase.from("ideas").delete().eq("id", id);
+      return { error };
+    },
+    [supabase],
+  );
 
   return {
     ideas,
