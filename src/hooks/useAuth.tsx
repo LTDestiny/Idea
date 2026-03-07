@@ -1,22 +1,52 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  type ReactNode,
+} from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types/database.types";
 
-export function useAuth() {
+interface AuthContextValue {
+  user: User | null;
+  profile: Profile | null;
+  loading: boolean;
+  signInWithEmail: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: Error | null }>;
+  signUpWithEmail: (
+    email: string,
+    password: string,
+    fullName: string,
+  ) => Promise<{ data: unknown; error: Error | null }>;
+  signOut: () => Promise<void>;
+  updateProfile: (fullName: string) => Promise<{ error: Error | null }>;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
-    // 1. getSession() reads from localStorage — fast, no network call.
+    let ignore = false;
+
     const getInitialSession = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+      if (ignore) return;
+
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 
@@ -26,20 +56,19 @@ export function useAuth() {
           .select("*")
           .eq("id", currentUser.id)
           .single();
-        setProfile(data);
+        if (!ignore) setProfile(data);
       }
 
-      setLoading(false);
+      if (!ignore) setLoading(false);
     };
 
     getInitialSession();
 
-    // 2. Listen for actual auth changes (sign-in, sign-out, token refresh).
-    //    Skip INITIAL_SESSION since getSession() already handles it.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (_event === "INITIAL_SESSION") return;
+      if (ignore) return;
 
       const currentUser = session?.user ?? null;
       setUser(currentUser);
@@ -50,7 +79,7 @@ export function useAuth() {
           .select("*")
           .eq("id", currentUser.id)
           .single();
-        setProfile(data);
+        if (!ignore) setProfile(data);
       } else {
         setProfile(null);
       }
@@ -58,7 +87,10 @@ export function useAuth() {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      ignore = true;
+      subscription.unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -83,9 +115,6 @@ export function useAuth() {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-
-      // Profile is created automatically by the database trigger handle_new_user()
-
       return { data, error };
     },
     [supabase],
@@ -98,5 +127,41 @@ export function useAuth() {
     window.location.href = "/";
   }, [supabase]);
 
-  return { user, profile, loading, signInWithEmail, signUpWithEmail, signOut };
+  const updateProfile = useCallback(
+    async (fullName: string) => {
+      if (!user) return { error: new Error("Not authenticated") };
+      const { error } = await supabase
+        .from("profiles")
+        .update({ full_name: fullName })
+        .eq("id", user.id);
+      if (!error) {
+        setProfile((prev) => (prev ? { ...prev, full_name: fullName } : prev));
+      }
+      return { error };
+    },
+    [supabase, user],
+  );
+
+  const value = useMemo(
+    () => ({
+      user,
+      profile,
+      loading,
+      signInWithEmail,
+      signUpWithEmail,
+      signOut,
+      updateProfile,
+    }),
+    [user, profile, loading, signInWithEmail, signUpWithEmail, signOut, updateProfile],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 }

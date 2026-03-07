@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { AuthProvider } from "@/hooks/useAuth";
 import { Navbar } from "@/components/layout/Navbar";
 import { Toaster } from "sonner";
 
@@ -39,9 +40,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main>{children}</main>
-          <Toaster richColors position="top-right" />
+          <AuthProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Toaster richColors position="top-right" />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

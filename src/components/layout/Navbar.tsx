@@ -14,6 +14,7 @@ import {
   Menu,
   LogOut,
   Info,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -47,6 +48,13 @@ export function Navbar() {
             <Link href="/about">
               <Info className="h-4 w-4" />
               About Us
+            </Link>
+          </Button>
+
+          <Button asChild variant="ghost" size="sm" className="gap-2">
+            <Link href="/members">
+              <Users className="h-4 w-4" />
+              Members
             </Link>
           </Button>
 

@@ -7,6 +7,8 @@ import { IdeaCard } from "@/components/ideas/IdeaCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   UserCircle,
   Lightbulb,
@@ -15,7 +17,11 @@ import {
   CheckCircle2,
   XCircle,
   Send,
+  Pencil,
+  Check,
+  X,
 } from "lucide-react";
+import { toast } from "sonner";
 import Link from "next/link";
 import type {
   IdeaWithDetails,
@@ -24,13 +30,16 @@ import type {
 } from "@/lib/types/database.types";
 
 export default function ProfilePage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, updateProfile } = useAuth();
   const [myIdeas, setMyIdeas] = useState<IdeaWithDetails[]>([]);
   const [joinedIdeas, setJoinedIdeas] = useState<IdeaWithDetails[]>([]);
   const [myRequests, setMyRequests] = useState<
     (JoinRequest & { ideas: Idea })[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [saving, setSaving] = useState(false);
   const supabase = useMemo(() => createClient(), []);
 
   // Depend on user.id (string) instead of user object to avoid refetching
@@ -43,26 +52,34 @@ export default function ProfilePage() {
     }
 
     const fetchData = async () => {
-      // My ideas
-      const { data: myData } = await supabase
-        .from("ideas")
-        .select(
-          "*, profiles!creator_id(*), comments(count), join_requests(count)",
-        )
-        .eq("creator_id", userId)
-        .order("created_at", { ascending: false });
+      setLoading(true);
 
-      setMyIdeas((myData as IdeaWithDetails[]) || []);
+      const [myRes, joinReqRes, reqRes] = await Promise.all([
+        supabase
+          .from("ideas")
+          .select(
+            "*, profiles!creator_id(*), comments(count), join_requests(count)",
+          )
+          .eq("creator_id", userId)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("join_requests")
+          .select("idea_id")
+          .eq("requester_id", userId)
+          .eq("status", "approved"),
+        supabase
+          .from("join_requests")
+          .select("*, ideas!idea_id(id, title, category)")
+          .eq("requester_id", userId)
+          .order("created_at", { ascending: false }),
+      ]);
 
-      // Joined ideas (approved)
-      const { data: joinReqs } = await supabase
-        .from("join_requests")
-        .select("idea_id")
-        .eq("requester_id", userId)
-        .eq("status", "approved");
+      setMyIdeas((myRes.data as IdeaWithDetails[]) || []);
+      setMyRequests((reqRes.data as (JoinRequest & { ideas: Idea })[]) || []);
 
-      if (joinReqs && joinReqs.length > 0) {
-        const ideaIds = joinReqs.map((r) => r.idea_id);
+      // Joined ideas — need a second query only if there are approved requests
+      if (joinReqRes.data && joinReqRes.data.length > 0) {
+        const ideaIds = joinReqRes.data.map((r) => r.idea_id);
         const { data: joinedData } = await supabase
           .from("ideas")
           .select(
@@ -72,16 +89,9 @@ export default function ProfilePage() {
           .order("created_at", { ascending: false });
 
         setJoinedIdeas((joinedData as IdeaWithDetails[]) || []);
+      } else {
+        setJoinedIdeas([]);
       }
-
-      // My requests (all statuses)
-      const { data: reqData } = await supabase
-        .from("join_requests")
-        .select("*, ideas!idea_id(id, title, category)")
-        .eq("requester_id", userId)
-        .order("created_at", { ascending: false });
-
-      setMyRequests((reqData as (JoinRequest & { ideas: Idea })[]) || []);
 
       setLoading(false);
     };
@@ -119,8 +129,82 @@ export default function ProfilePage() {
       {/* Profile header */}
       <div className="flex items-center gap-4 mb-8">
         <UserCircle className="h-20 w-20 text-muted-foreground" />
-        <div>
-          <h1 className="text-2xl font-bold">{profile?.full_name || "User"}</h1>
+        <div className="flex-1">
+          {editing ? (
+            <div className="flex items-center gap-2">
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="max-w-[240px] h-9"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const doSave = async () => {
+                      const trimmed = editName.trim();
+                      if (!trimmed) return;
+                      setSaving(true);
+                      const { error } = await updateProfile(trimmed);
+                      setSaving(false);
+                      if (error) {
+                        toast.error("Failed to update name");
+                      } else {
+                        toast.success("Name updated");
+                        setEditing(false);
+                      }
+                    };
+                    doSave();
+                  }
+                  if (e.key === "Escape") setEditing(false);
+                }}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8"
+                disabled={saving}
+                onClick={async () => {
+                  const trimmed = editName.trim();
+                  if (!trimmed) return;
+                  setSaving(true);
+                  const { error } = await updateProfile(trimmed);
+                  setSaving(false);
+                  if (error) {
+                    toast.error("Failed to update name");
+                  } else {
+                    toast.success("Name updated");
+                    setEditing(false);
+                  }
+                }}
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8"
+                onClick={() => setEditing(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold">
+                {profile?.full_name || "User"}
+              </h1>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8"
+                onClick={() => {
+                  setEditName(profile?.full_name || "");
+                  setEditing(true);
+                }}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
           <p className="text-muted-foreground">{profile?.email}</p>
         </div>
       </div>

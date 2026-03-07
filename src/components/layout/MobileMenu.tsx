@@ -17,6 +17,7 @@ import {
   LogOut,
   Home,
   Info,
+  Users,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types/database.types";
@@ -70,6 +71,18 @@ export function MobileMenu({
             <Link href="/about">
               <Info className="h-4 w-4" />
               About Us
+            </Link>
+          </Button>
+
+          <Button
+            asChild
+            variant="ghost"
+            className="justify-start gap-3 h-11"
+            onClick={onClose}
+          >
+            <Link href="/members">
+              <Users className="h-4 w-4" />
+              Members
             </Link>
           </Button>
 
