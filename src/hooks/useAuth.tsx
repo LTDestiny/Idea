@@ -41,45 +41,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let ignore = false;
 
-    const getInitialSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (ignore) return;
+    const fetchProfile = (userId: string) =>
+      supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single()
+        .then(({ data }) => {
+          if (!ignore && data) setProfile(data);
+        });
 
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-
-      if (currentUser) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", currentUser.id)
-          .single();
-        if (!ignore) setProfile(data);
-      }
-
-      if (!ignore) setLoading(false);
-    };
-
-    getInitialSession();
-
+    // Single source of truth: onAuthStateChange handles ALL events
+    // including INITIAL_SESSION (reads cookie → refreshes token if needed)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (_event === "INITIAL_SESSION") return;
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (ignore) return;
 
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 
       if (currentUser) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", currentUser.id)
-          .single();
-        if (!ignore) setProfile(data);
+        // Fire-and-forget — don't block loading on profile fetch
+        fetchProfile(currentUser.id);
       } else {
         setProfile(null);
       }
@@ -87,8 +71,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
+    // Safety net: if Supabase hangs (slow token refresh, network issues),
+    // stop loading so the UI is never permanently stuck
+    const safetyTimeout = setTimeout(() => {
+      if (!ignore) setLoading(false);
+    }, 4000);
+
     return () => {
       ignore = true;
+      clearTimeout(safetyTimeout);
       subscription.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

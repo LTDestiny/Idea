@@ -50,12 +50,27 @@ export async function updateSession(request: NextRequest) {
       url.pathname = "/login";
       url.searchParams.set("redirect", request.nextUrl.pathname);
       url.searchParams.set("message", "Please sign in to continue");
-      return NextResponse.redirect(url);
+      const redirectResponse = NextResponse.redirect(url);
+      // Propagate cookies from supabaseResponse to redirect so token refreshes aren't lost
+      supabaseResponse.cookies.getAll().forEach((cookie) => {
+        redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
+      });
+      redirectResponse.headers.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate",
+      );
+      return redirectResponse;
     }
   } else {
     // For public routes: refresh session token from cookie (fast, no network call)
     await supabase.auth.getSession();
   }
+
+  // Prevent caching of middleware responses to ensure fresh cookies
+  supabaseResponse.headers.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate",
+  );
 
   return supabaseResponse;
 }

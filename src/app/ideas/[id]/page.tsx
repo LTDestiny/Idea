@@ -44,7 +44,7 @@ export default function IdeaDetailPage() {
   const router = useRouter();
   const ideaId = params.id as string;
 
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const {
     comments,
     totalCount: commentsCount,
@@ -133,10 +133,10 @@ export default function IdeaDetailPage() {
     [user, createRequest, supabase],
   );
 
-  const isOwner = user && idea && user.id === idea.creator_id;
+  const isOwner = !authLoading && user && idea && user.id === idea.creator_id;
   const approvedMembers = requests.filter((r) => r.status === "approved");
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
