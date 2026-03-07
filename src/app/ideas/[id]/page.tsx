@@ -161,11 +161,13 @@ export default function IdeaDetailPage() {
         <div className="lg:col-span-2 space-y-8">
           {/* Header */}
           <div className="space-y-4">
-            <div className="flex items-start gap-3 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-bold flex-1">
-                {idea.title}
-              </h1>
-              <CategoryBadge category={idea.category} />
+            <div className="space-y-3">
+              <h1 className="text-2xl sm:text-3xl font-bold">{idea.title}</h1>
+              <div className="flex gap-2 flex-wrap">
+                {idea.category.map((cat) => (
+                  <CategoryBadge key={cat} category={cat} />
+                ))}
+              </div>
             </div>
 
             <div className="flex items-center gap-3">

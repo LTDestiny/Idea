@@ -7,14 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   CATEGORY_LABELS,
+  CATEGORY_COLORS,
   type IdeaCategory,
   type IdeaFormData,
 } from "@/lib/types/database.types";
@@ -37,8 +31,8 @@ export function IdeaForm({
   const [description, setDescription] = useState(
     initialData?.description || "",
   );
-  const [category, setCategory] = useState<IdeaCategory | "">(
-    initialData?.category || "",
+  const [category, setCategory] = useState<IdeaCategory[]>(
+    initialData?.category || [],
   );
   const [lookingFor, setLookingFor] = useState(initialData?.looking_for || "");
   const [loading, setLoading] = useState(false);
@@ -54,8 +48,8 @@ export function IdeaForm({
       toast.error("Please enter a description");
       return;
     }
-    if (!category) {
-      toast.error("Please select a category(ies)");
+    if (category.length === 0) {
+      toast.error("Please select at least one category");
       return;
     }
 
@@ -63,7 +57,7 @@ export function IdeaForm({
     const { error } = await onSubmit({
       title: title.trim(),
       description: description.trim(),
-      category: category as IdeaCategory,
+      category,
       looking_for: lookingFor.trim(),
     });
     setLoading(false);
@@ -86,13 +80,13 @@ export function IdeaForm({
         <Input
           id="title"
           value={title}
-          onChange={(e) => setTitle(e.target.value.slice(0, 200))}
+          onChange={(e) => setTitle(e.target.value.slice(0, 50))}
           placeholder="Enter your idea title..."
           required
-          maxLength={200}
+          maxLength={50}
         />
         <p className="text-xs text-muted-foreground text-right">
-          {title.length}/200
+          {title.length}/50
         </p>
       </div>
 
@@ -115,26 +109,37 @@ export function IdeaForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="category">
+        <Label>
           Categories <span className="text-destructive">*</span>
         </Label>
-        <Select
-          value={category}
-          onValueChange={(val) => setCategory(val as IdeaCategory)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a category(ies)" />
-          </SelectTrigger>
-          <SelectContent>
-            {(Object.entries(CATEGORY_LABELS) as [IdeaCategory, string][]).map(
-              ([key, label]) => (
-                <SelectItem key={key} value={key}>
-                  {label}
-                </SelectItem>
-              ),
-            )}
-          </SelectContent>
-        </Select>
+        <div className="flex gap-2 flex-wrap">
+          {(Object.entries(CATEGORY_LABELS) as [IdeaCategory, string][]).map(
+            ([key, label]) => (
+              <Button
+                key={key}
+                type="button"
+                variant={category.includes(key) ? "default" : "outline"}
+                size="sm"
+                onClick={() =>
+                  setCategory((prev) =>
+                    prev.includes(key)
+                      ? prev.filter((c) => c !== key)
+                      : [...prev, key],
+                  )
+                }
+                className="gap-1"
+              >
+                <span>{CATEGORY_COLORS[key].icon}</span>
+                {label}
+              </Button>
+            ),
+          )}
+        </div>
+        {category.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {category.length} selected
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">

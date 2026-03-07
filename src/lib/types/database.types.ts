@@ -27,7 +27,7 @@ export interface Idea {
   id: string;
   title: string;
   description: string;
-  category: IdeaCategory;
+  category: IdeaCategory[];
   looking_for: string | null;
   creator_id: string;
   created_at: string;
@@ -65,7 +65,7 @@ export interface JoinRequest {
 export interface IdeaFormData {
   title: string;
   description: string;
-  category: IdeaCategory;
+  category: IdeaCategory[];
   looking_for: string;
 }
 

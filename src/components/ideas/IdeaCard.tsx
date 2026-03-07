@@ -32,11 +32,15 @@ export const IdeaCard = memo(function IdeaCard({ idea }: IdeaCardProps) {
     <Link href={`/ideas/${idea.id}`} className="block group">
       <Card className="h-full transition-all duration-200 hover:shadow-md hover:scale-[1.01] cursor-pointer">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between gap-2">
+          <div className="space-y-2">
             <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
               {idea.title}
             </h3>
-            <CategoryBadge category={idea.category} />
+            <div className="flex gap-1.5 flex-wrap">
+              {idea.category.map((cat) => (
+                <CategoryBadge key={cat} category={cat} />
+              ))}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="pb-3">

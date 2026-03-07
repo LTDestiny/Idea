@@ -191,6 +191,82 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* GLOCAL STEAM Project */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+          <Lightbulb className="h-6 w-6 text-primary" />
+          GLOCAL STEAM Project
+        </h2>
+        <p className="text-muted-foreground mb-6 leading-relaxed">
+          The <strong>GLOCAL STEAM Project</strong> supports activities in which
+          university students work together to{" "}
+          <strong>1) discover social challenges</strong>,{" "}
+          <strong>2) propose original solutions</strong> by combining multiple
+          academic fields and technologies, and{" "}
+          <strong>3) work to solve these challenges</strong>.
+        </p>
+
+        <h3 className="text-lg font-semibold mb-4">Evaluation Criteria</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Proposals that meet the following requirements are highly evaluated
+          and eligible for support under the project:
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-2xl font-bold text-primary mb-2">A</div>
+              <h4 className="font-semibold mb-1">
+                Social Significance &amp; Necessity
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                The project addresses a real social challenge with meaningful
+                impact on the community.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-2xl font-bold text-primary mb-2">B</div>
+              <h4 className="font-semibold mb-1">Originality</h4>
+              <p className="text-sm text-muted-foreground">
+                The proposed solution is creative and offers a fresh, innovative
+                perspective.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-2xl font-bold text-primary mb-2">C</div>
+              <h4 className="font-semibold mb-1">Interdisciplinarity</h4>
+              <p className="text-sm text-muted-foreground">
+                The project combines knowledge and methods from multiple
+                academic fields.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-2xl font-bold text-primary mb-2">D</div>
+              <h4 className="font-semibold mb-1">Feasibility</h4>
+              <p className="text-sm text-muted-foreground">
+                Project period &lt; 1 year. Budget &lt; 34,000,000 VND (≈
+                200,000 JPY under TUT conditions).
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-2xl font-bold text-primary mb-2">E</div>
+              <h4 className="font-semibold mb-1">Team Collaboration</h4>
+              <p className="text-sm text-muted-foreground">
+                Effective teamwork and collaboration between members from
+                different backgrounds.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Mission */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">

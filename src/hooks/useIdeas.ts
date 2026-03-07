@@ -50,7 +50,7 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
       `);
 
     if (categories.length > 0) {
-      query = query.in("category", categories);
+      query = query.overlaps("category", categories);
     }
 
     if (search.trim()) {
