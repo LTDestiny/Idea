@@ -63,7 +63,7 @@ const steamPillars = [
     bg: "bg-violet-100 dark:bg-violet-950",
     border: "border-violet-300 dark:border-violet-700",
     description:
-      "Mathematics is the universal language across all STEAM fields. From algorithms to data analysis, math helps us model and solve problems.",
+      "Mathematics is the universal language across all GLOCAL STEAM fields. From algorithms to data analysis, math helps us model and solve problems.",
   },
 ];
 
@@ -92,25 +92,25 @@ export default function AboutPage() {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Lightbulb className="h-10 w-10 text-primary" />
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            STEAM
+            GLOCAL STEAM
           </h1>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          A platform connecting STEAM ideas between students of two universities
-          — where <strong>Science</strong>, <strong>Technology</strong>,{" "}
-          <strong>Engineering</strong>, <strong>Art</strong> and{" "}
-          <strong>Mathematics</strong> come together.
+          A platform connecting GLOCAL STEAM ideas between students of two
+          universities — where <strong>Science</strong>,{" "}
+          <strong>Technology</strong>, <strong>Engineering</strong>,{" "}
+          <strong>Art</strong> and <strong>Mathematics</strong> come together.
         </p>
       </section>
 
-      {/* What is STEAM */}
+      {/* What is GLOCAL STEAM */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <GraduationCap className="h-6 w-6 text-primary" />
-          What is STEAM?
+          What is GLOCAL STEAM?
         </h2>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          <strong>STEAM</strong> stands for <strong>S</strong>cience,{" "}
+          <strong>GLOCAL STEAM</strong> stands for <strong>S</strong>cience,{" "}
           <strong>T</strong>echnology, <strong>E</strong>ngineering,{" "}
           <strong>A</strong>rt, <strong>M</strong>ath — an interdisciplinary
           education model combining 5 key fields to develop creative thinking,

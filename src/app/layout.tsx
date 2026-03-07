@@ -18,7 +18,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "STEAM — Share GLOCAL STEAM Ideas",
+  title: "GLOCAL STEAM — Share GLOCAL STEAM Ideas",
   description:
     "A platform connecting GLOCAL STEAM ideas between students of two universities",
 };

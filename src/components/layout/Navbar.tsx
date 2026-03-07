@@ -15,6 +15,7 @@ import {
   LogOut,
   Info,
   Users,
+  BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -39,7 +40,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-lg">
           <Lightbulb className="h-6 w-6 text-primary" />
-          <span>STEAM</span>
+          <span>GLOCAL STEAM</span>
         </Link>
 
         {/* Desktop nav */}
@@ -55,6 +56,13 @@ export function Navbar() {
             <Link href="/members">
               <Users className="h-4 w-4" />
               Members
+            </Link>
+          </Button>
+
+          <Button asChild variant="ghost" size="sm" className="gap-2">
+            <Link href="/instructions">
+              <BookOpen className="h-4 w-4" />
+              Instructions
             </Link>
           </Button>
 

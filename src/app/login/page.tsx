@@ -105,7 +105,7 @@ function LoginContent() {
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto flex items-center gap-2">
             <Lightbulb className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">STEAM</span>
+            <span className="text-2xl font-bold">GLOCAL STEAM</span>
           </div>
           <CardTitle className="text-xl">
             {isSignUp ? "Create an Account" : "Sign In"}

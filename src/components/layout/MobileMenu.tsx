@@ -18,6 +18,7 @@ import {
   Home,
   Info,
   Users,
+  BookOpen,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types/database.types";
@@ -45,7 +46,7 @@ export function MobileMenu({
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <Lightbulb className="h-5 w-5" />
-            STEAM
+            GLOCAL STEAM
           </SheetTitle>
         </SheetHeader>
 
@@ -83,6 +84,18 @@ export function MobileMenu({
             <Link href="/members">
               <Users className="h-4 w-4" />
               Members
+            </Link>
+          </Button>
+
+          <Button
+            asChild
+            variant="ghost"
+            className="justify-start gap-3 h-11"
+            onClick={onClose}
+          >
+            <Link href="/instructions">
+              <BookOpen className="h-4 w-4" />
+              Instructions
             </Link>
           </Button>
 
