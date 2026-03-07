@@ -149,12 +149,12 @@ export default function AboutPage() {
           Partner Universities
         </h2>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          <strong>STEAM</strong> is a collaborative platform between two
+          <strong>GLOCAL STEAM</strong> is a collaborative platform between two
           universities: <strong>Tokyo University of Technology (TUT)</strong> in
           Japan and{" "}
           <strong>Industrial University of Ho Chi Minh City (IUH)</strong> in
-          Vietnam. Together, they foster international STEAM collaboration and
-          knowledge exchange.
+          Vietnam. Together, they foster international GLOCAL STEAM
+          collaboration and knowledge exchange.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -183,8 +183,8 @@ export default function AboutPage() {
 
         <div className="mt-8 p-6 rounded-xl bg-primary/5 border border-primary/20 text-center">
           <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Through the <strong>STEAM</strong> platform, students from both
-            universities can share ideas, find collaborators, and develop
+            Through the <strong>GLOCAL STEAM</strong> platform, students from
+            both universities can share ideas, find collaborators, and develop
             interdisciplinary projects together — breaking through language
             barriers and geographical distances.
           </p>
@@ -203,8 +203,8 @@ export default function AboutPage() {
               <div className="text-3xl mb-3">💡</div>
               <h3 className="font-semibold mb-2">Share Ideas</h3>
               <p className="text-sm text-muted-foreground">
-                Create a space where every STEAM idea can be heard, discussed,
-                and developed — from AI and IoT to digital art.
+                Create a space where every GLOCAL STEAM idea can be heard,
+                discussed, and developed — from AI and IoT to digital art.
               </p>
             </CardContent>
           </Card>
@@ -235,7 +235,7 @@ export default function AboutPage() {
       <section className="text-center py-10 rounded-xl bg-muted/50 border">
         <h2 className="text-2xl font-bold mb-3">Ready to share your idea?</h2>
         <p className="text-muted-foreground mb-6">
-          Explore STEAM ideas or share your own today!
+          Explore GLOCAL STEAM ideas or share your own today!
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button asChild size="lg">

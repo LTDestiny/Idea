@@ -24,7 +24,7 @@ export default async function HomePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Explore STEAM Ideas</h1>
+        <h1 className="text-3xl font-bold">Explore GLOCAL STEAM Ideas</h1>
         <p className="text-muted-foreground mt-2">
           Share, connect, and develop ideas with the community
         </p>

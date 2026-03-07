@@ -55,7 +55,7 @@ export function IdeaForm({
       return;
     }
     if (!category) {
-      toast.error("Please select a category");
+      toast.error("Please select a category(ies)");
       return;
     }
 
@@ -116,14 +116,14 @@ export function IdeaForm({
 
       <div className="space-y-2">
         <Label htmlFor="category">
-          Category <span className="text-destructive">*</span>
+          Categories <span className="text-destructive">*</span>
         </Label>
         <Select
           value={category}
           onValueChange={(val) => setCategory(val as IdeaCategory)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select a category" />
+            <SelectValue placeholder="Select a category(ies)" />
           </SelectTrigger>
           <SelectContent>
             {(Object.entries(CATEGORY_LABELS) as [IdeaCategory, string][]).map(
