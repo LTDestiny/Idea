@@ -25,7 +25,7 @@ export const SkillTag = memo(function SkillTag({
           type="button"
           onClick={onRemove}
           className="ml-0.5 hover:text-cyan-900 dark:hover:text-cyan-100 focus:outline-none min-w-[20px] min-h-[20px] flex items-center justify-center"
-          aria-label={`Xóa ${skill}`}
+          aria-label={`Remove ${skill}`}
         >
           ×
         </button>

@@ -27,40 +27,40 @@ export default function InstructionsPage() {
         <div className="flex items-center justify-center gap-3 mb-4">
           <BookOpen className="h-10 w-10 text-primary" />
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Hướng dẫn sử dụng
+            User Guide
           </h1>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Trang hướng dẫn chi tiết các chức năng chính của nền tảng GLOCAL STEAM
-          — quản lý Idea, thành viên, giao diện và hồ sơ cá nhân.
+          A detailed guide to the main features of the GLOCAL STEAM platform —
+          managing Ideas, members, themes, and your profile.
         </p>
       </section>
 
       {/* Table of contents */}
       <Card className="mb-10">
         <CardHeader>
-          <CardTitle className="text-lg">Mục lục</CardTitle>
+          <CardTitle className="text-lg">Table of Contents</CardTitle>
         </CardHeader>
         <CardContent>
           <ol className="list-decimal list-inside space-y-2 text-sm">
             <li>
               <a href="#idea-crud" className="text-primary hover:underline">
-                Quản lý Idea (Tạo, Sửa, Xóa)
+                Manage Ideas (Create, Update, Delete)
               </a>
             </li>
             <li>
               <a href="#member-crud" className="text-primary hover:underline">
-                Quản lý Member (Yêu cầu tham gia, Duyệt, Từ chối)
+                Manage Members (Join Request, Approve, Reject)
               </a>
             </li>
             <li>
               <a href="#theme" className="text-primary hover:underline">
-                Chế độ Theme (Sáng / Tối)
+                Theme Mode (Light / Dark)
               </a>
             </li>
             <li>
               <a href="#profile" className="text-primary hover:underline">
-                Hồ sơ cá nhân (Profile)
+                Profile
               </a>
             </li>
           </ol>
@@ -73,7 +73,7 @@ export default function InstructionsPage() {
           <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary">
             <Lightbulb className="h-5 w-5" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold">1. Quản lý Idea</h2>
+          <h2 className="text-2xl md:text-3xl font-bold">1. Manage Ideas</h2>
         </div>
 
         {/* Create */}
@@ -81,48 +81,48 @@ export default function InstructionsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Plus className="h-5 w-5 text-green-600 dark:text-green-400" />
-              Tạo Idea mới (Create)
+              Create a New Idea
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed">
             <p>
-              <strong>Yêu cầu:</strong> Bạn phải{" "}
-              <Badge variant="secondary">đăng nhập</Badge> để tạo Idea.
+              <strong>Requirement:</strong> You must be{" "}
+              <Badge variant="secondary">signed in</Badge> to create an Idea.
             </p>
             <div className="space-y-2">
-              <p className="font-medium">Các bước thực hiện:</p>
+              <p className="font-medium">Steps:</p>
               <ol className="list-decimal list-inside space-y-1.5 ml-2">
                 <li>
-                  Nhấn nút{" "}
+                  Click the{" "}
                   <Badge className="gap-1">
                     <Plus className="h-3 w-3" /> New Idea
                   </Badge>{" "}
-                  trên thanh điều hướng (Navbar).
+                  button on the Navbar.
                 </li>
                 <li>
-                  Điền các thông tin bắt buộc:
+                  Fill in the required fields:
                   <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
                     <li>
-                      <strong>Title</strong> — Tiêu đề ý tưởng (tối đa 50 ký
-                      tự).
+                      <strong>Title</strong> — Your idea title (max 50
+                      characters).
                     </li>
                     <li>
-                      <strong>Description</strong> — Mô tả chi tiết (tối đa 5000
-                      ký tự).
+                      <strong>Description</strong> — Detailed description (max
+                      5000 characters).
                     </li>
                     <li>
-                      <strong>Category</strong> — Chọn ít nhất 1 danh mục GLOCAL
-                      STEAM (Science, Technology, Engineering, Art,
+                      <strong>Category</strong> — Select at least 1 GLOCAL STEAM
+                      category (Science, Technology, Engineering, Art,
                       Mathematics).
                     </li>
                   </ul>
                 </li>
                 <li>
-                  (Tuỳ chọn) Điền <strong>Looking for</strong> — Mô tả kỹ
-                  năng/vai trò bạn cần tìm kiếm.
+                  (Optional) Fill in <strong>Looking for</strong> — Describe the
+                  skills/roles you are looking for.
                 </li>
                 <li>
-                  Nhấn <strong>Submit</strong> để tạo Idea.
+                  Click <strong>Submit</strong> to create your Idea.
                 </li>
               </ol>
             </div>
@@ -134,32 +134,31 @@ export default function InstructionsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Pencil className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              Chỉnh sửa Idea (Update)
+              Edit an Idea (Update)
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed">
             <p>
-              <strong>Yêu cầu:</strong> Chỉ{" "}
-              <Badge variant="secondary">chủ sở hữu</Badge> của Idea mới có
-              quyền chỉnh sửa.
+              <strong>Requirement:</strong> Only the{" "}
+              <Badge variant="secondary">owner</Badge> of an Idea can edit it.
             </p>
             <div className="space-y-2">
-              <p className="font-medium">Các bước thực hiện:</p>
+              <p className="font-medium">Steps:</p>
               <ol className="list-decimal list-inside space-y-1.5 ml-2">
-                <li>Vào trang chi tiết Idea mà bạn đã tạo.</li>
+                <li>Go to the detail page of an Idea you created.</li>
                 <li>
-                  Nhấn nút{" "}
+                  Click the{" "}
                   <Badge variant="outline" className="gap-1">
                     <Pencil className="h-3 w-3" /> Edit
                   </Badge>{" "}
-                  (chỉ hiển thị nếu bạn là chủ sở hữu).
+                  button (only visible if you are the owner).
                 </li>
                 <li>
-                  Thay đổi các thông tin cần cập nhật (Title, Description,
+                  Update the fields you want to change (Title, Description,
                   Category, Looking for).
                 </li>
                 <li>
-                  Nhấn <strong>Save</strong> để lưu thay đổi.
+                  Click <strong>Save</strong> to save your changes.
                 </li>
               </ol>
             </div>
@@ -171,35 +170,34 @@ export default function InstructionsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" />
-              Xóa Idea (Delete)
+              Delete an Idea
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed">
             <p>
-              <strong>Yêu cầu:</strong> Chỉ{" "}
-              <Badge variant="secondary">chủ sở hữu</Badge> của Idea mới có
-              quyền xóa.
+              <strong>Requirement:</strong> Only the{" "}
+              <Badge variant="secondary">owner</Badge> of an Idea can delete it.
             </p>
             <div className="space-y-2">
-              <p className="font-medium">Các bước thực hiện:</p>
+              <p className="font-medium">Steps:</p>
               <ol className="list-decimal list-inside space-y-1.5 ml-2">
-                <li>Vào trang chi tiết Idea mà bạn đã tạo.</li>
+                <li>Go to the detail page of an Idea you created.</li>
                 <li>
-                  Nhấn nút{" "}
+                  Click the{" "}
                   <Badge variant="destructive" className="gap-1">
                     <Trash2 className="h-3 w-3" /> Delete
-                  </Badge>
-                  .
+                  </Badge>{" "}
+                  button.
                 </li>
                 <li>
-                  Một hộp thoại xác nhận sẽ xuất hiện — nhấn{" "}
-                  <strong>Confirm</strong> để xóa vĩnh viễn.
+                  A confirmation dialog will appear — click{" "}
+                  <strong>Confirm</strong> to permanently delete.
                 </li>
               </ol>
             </div>
             <p className="text-destructive text-xs mt-2">
-              ⚠️ Hành động này không thể hoàn tác. Tất cả bình luận và yêu cầu
-              tham gia liên quan cũng sẽ bị xóa.
+              ⚠️ This action cannot be undone. All related comments and join
+              requests will also be deleted.
             </p>
           </CardContent>
         </Card>
@@ -213,7 +211,7 @@ export default function InstructionsPage() {
           <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary">
             <Users className="h-5 w-5" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold">2. Quản lý Member</h2>
+          <h2 className="text-2xl md:text-3xl font-bold">2. Manage Members</h2>
         </div>
 
         {/* Join Request */}
@@ -221,28 +219,28 @@ export default function InstructionsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Send className="h-5 w-5 text-green-600 dark:text-green-400" />
-              Gửi yêu cầu tham gia (Join Request)
+              Send a Join Request
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed">
             <p>
-              <strong>Yêu cầu:</strong> Bạn phải{" "}
-              <Badge variant="secondary">đăng nhập</Badge> và không phải chủ sở
-              hữu của Idea đó.
+              <strong>Requirement:</strong> You must be{" "}
+              <Badge variant="secondary">signed in</Badge> and not be the owner
+              of the Idea.
             </p>
             <ol className="list-decimal list-inside space-y-1.5 ml-2">
-              <li>Vào trang chi tiết của Idea bạn muốn tham gia.</li>
+              <li>Go to the detail page of the Idea you want to join.</li>
               <li>
-                Nhấn nút{" "}
+                Click the{" "}
                 <Badge className="gap-1">
                   <Send className="h-3 w-3" /> Join
-                </Badge>
-                .
+                </Badge>{" "}
+                button.
               </li>
-              <li>Điền lời nhắn giới thiệu bản thân (tuỳ chọn).</li>
+              <li>Write an introduction message (optional).</li>
               <li>
-                Nhấn <strong>Send Request</strong> — yêu cầu sẽ được gửi đến chủ
-                Idea.
+                Click <strong>Send Request</strong> — the request will be sent
+                to the Idea owner.
               </li>
             </ol>
           </CardContent>
@@ -253,36 +251,36 @@ export default function InstructionsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <CheckCircle2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              Duyệt / Từ chối thành viên (Approve / Reject)
+              Approve / Reject Members
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed">
             <p>
-              <strong>Yêu cầu:</strong> Chỉ{" "}
-              <Badge variant="secondary">chủ sở hữu</Badge> Idea mới có quyền
-              duyệt hoặc từ chối.
+              <strong>Requirement:</strong> Only the{" "}
+              <Badge variant="secondary">owner</Badge> of an Idea can approve or
+              reject requests.
             </p>
             <ol className="list-decimal list-inside space-y-1.5 ml-2">
-              <li>Vào trang chi tiết Idea mà bạn sở hữu.</li>
+              <li>Go to the detail page of an Idea you own.</li>
               <li>
-                Tại phần <strong>Join Requests</strong>, bạn sẽ thấy danh sách
-                yêu cầu đang chờ.
+                In the <strong>Join Requests</strong> section, you will see a
+                list of pending requests.
               </li>
               <li>
-                Nhấn{" "}
+                Click{" "}
                 <Badge variant="outline" className="gap-1 text-green-600">
                   <CheckCircle2 className="h-3 w-3" /> Approve
                 </Badge>{" "}
-                để duyệt, hoặc{" "}
+                to accept, or{" "}
                 <Badge variant="outline" className="gap-1 text-red-600">
                   <XCircle className="h-3 w-3" /> Reject
                 </Badge>{" "}
-                để từ chối.
+                to decline.
               </li>
             </ol>
             <p className="text-muted-foreground text-xs mt-2">
-              💡 Thành viên được duyệt sẽ xuất hiện trong trang{" "}
-              <strong>Members</strong> và trong danh sách thành viên của Idea.
+              💡 Approved members will appear on the <strong>Members</strong>{" "}
+              page and in the Idea&apos;s member list.
             </p>
           </CardContent>
         </Card>
@@ -292,22 +290,22 @@ export default function InstructionsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-              Xóa thành viên (Remove)
+              Remove a Member
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed">
             <p>
-              <strong>Yêu cầu:</strong> Chỉ{" "}
-              <Badge variant="secondary">chủ sở hữu</Badge> Idea mới có quyền
-              xóa thành viên.
+              <strong>Requirement:</strong> Only the{" "}
+              <Badge variant="secondary">owner</Badge> of an Idea can remove
+              members.
             </p>
             <ol className="list-decimal list-inside space-y-1.5 ml-2">
-              <li>Vào trang chi tiết Idea mà bạn sở hữu.</li>
+              <li>Go to the detail page of an Idea you own.</li>
               <li>
-                Tại danh sách thành viên đã tham gia, nhấn nút xóa bên cạnh tên
-                thành viên cần loại bỏ.
+                In the member list, click the remove button next to the member
+                you want to remove.
               </li>
-              <li>Xác nhận để hoàn tất.</li>
+              <li>Confirm to complete the removal.</li>
             </ol>
           </CardContent>
         </Card>
@@ -321,15 +319,15 @@ export default function InstructionsPage() {
           <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary">
             <Sun className="h-5 w-5" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold">3. Chế độ Theme</h2>
+          <h2 className="text-2xl md:text-3xl font-bold">3. Theme Mode</h2>
         </div>
 
         <Card>
           <CardContent className="pt-6 space-y-4 text-sm leading-relaxed">
             <p>
-              GLOCAL STEAM hỗ trợ <strong>2 chế độ giao diện</strong>: Sáng
-              (Light) và Tối (Dark). Hệ thống mặc định theo cài đặt hệ điều hành
-              của bạn.
+              GLOCAL STEAM supports <strong>2 display modes</strong>: Light and
+              Dark. The system defaults to your operating system&apos;s
+              preference.
             </p>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -338,8 +336,8 @@ export default function InstructionsPage() {
                 <div>
                   <p className="font-medium">Light Mode</p>
                   <p className="text-muted-foreground text-xs mt-1">
-                    Giao diện sáng, phù hợp sử dụng ban ngày hoặc trong môi
-                    trường có nhiều ánh sáng.
+                    A bright interface, suitable for daytime use or well-lit
+                    environments.
                   </p>
                 </div>
               </div>
@@ -348,25 +346,25 @@ export default function InstructionsPage() {
                 <div>
                   <p className="font-medium">Dark Mode</p>
                   <p className="text-muted-foreground text-xs mt-1">
-                    Giao diện tối, giúp giảm mỏi mắt khi sử dụng vào ban đêm.
+                    A dark interface that reduces eye strain during nighttime
+                    use.
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <p className="font-medium">Cách chuyển đổi:</p>
+              <p className="font-medium">How to switch:</p>
               <ol className="list-decimal list-inside space-y-1.5 ml-2">
                 <li>
-                  Tìm biểu tượng{" "}
-                  <Sun className="inline h-4 w-4 text-yellow-500" /> /{" "}
-                  <Moon className="inline h-4 w-4 text-indigo-500" /> trên thanh
-                  điều hướng (góc phải).
+                  Find the <Sun className="inline h-4 w-4 text-yellow-500" /> /{" "}
+                  <Moon className="inline h-4 w-4 text-indigo-500" /> icon on
+                  the Navbar (top right).
                 </li>
-                <li>Nhấn vào biểu tượng để chuyển đổi giữa Light và Dark.</li>
+                <li>Click the icon to toggle between Light and Dark mode.</li>
                 <li>
-                  Chế độ sẽ được lưu tự động và áp dụng cho các lần truy cập
-                  sau.
+                  Your preference is saved automatically and applied on future
+                  visits.
                 </li>
               </ol>
             </div>
@@ -382,68 +380,66 @@ export default function InstructionsPage() {
           <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary">
             <UserCircle className="h-5 w-5" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold">
-            4. Hồ sơ cá nhân (Profile)
-          </h2>
+          <h2 className="text-2xl md:text-3xl font-bold">4. Profile</h2>
         </div>
 
         <Card>
           <CardContent className="pt-6 space-y-4 text-sm leading-relaxed">
             <p>
-              Trang Profile hiển thị thông tin cá nhân và tổng hợp hoạt động của
-              bạn trên nền tảng.
+              The Profile page displays your personal information and a summary
+              of your activity on the platform.
             </p>
 
             <div className="space-y-2">
-              <p className="font-medium">Thông tin hiển thị:</p>
+              <p className="font-medium">Displayed information:</p>
               <ul className="list-disc list-inside ml-2 space-y-1.5">
                 <li>
-                  <strong>Tên hiển thị</strong> — Bạn có thể chỉnh sửa bằng cách
-                  nhấn vào biểu tượng <Pencil className="inline h-3.5 w-3.5" />{" "}
-                  bên cạnh tên.
+                  <strong>Display Name</strong> — You can edit it by clicking
+                  the <Pencil className="inline h-3.5 w-3.5" /> icon next to
+                  your name.
                 </li>
                 <li>
-                  <strong>Email</strong> — Địa chỉ email từ tài khoản đăng nhập
-                  (không thể thay đổi).
+                  <strong>Email</strong> — The email address from your sign-in
+                  account (cannot be changed).
                 </li>
               </ul>
             </div>
 
             <div className="space-y-2">
-              <p className="font-medium">Các tab trong Profile:</p>
+              <p className="font-medium">Profile tabs:</p>
               <ul className="list-disc list-inside ml-2 space-y-1.5">
                 <li>
-                  <strong>My Ideas</strong> — Danh sách tất cả Idea bạn đã tạo.
+                  <strong>My Ideas</strong> — A list of all Ideas you have
+                  created.
                 </li>
                 <li>
-                  <strong>Joined Ideas</strong> — Danh sách Idea bạn đã được
-                  duyệt tham gia.
+                  <strong>Joined Ideas</strong> — A list of Ideas you have been
+                  approved to join.
                 </li>
                 <li>
-                  <strong>My Requests</strong> — Trạng thái các yêu cầu tham gia
-                  bạn đã gửi (Pending / Approved / Rejected).
+                  <strong>My Requests</strong> — The status of join requests you
+                  have sent (Pending / Approved / Rejected).
                 </li>
               </ul>
             </div>
 
             <div className="space-y-2">
-              <p className="font-medium">Cách truy cập:</p>
+              <p className="font-medium">How to access:</p>
               <ol className="list-decimal list-inside space-y-1.5 ml-2">
-                <li>Đăng nhập vào hệ thống.</li>
+                <li>Sign in to your account.</li>
                 <li>
-                  Nhấn vào tên hoặc biểu tượng{" "}
-                  <UserCircle className="inline h-4 w-4" /> trên thanh điều
-                  hướng.
+                  Click your name or the{" "}
+                  <UserCircle className="inline h-4 w-4" /> icon on the Navbar.
                 </li>
                 <li>
-                  Bạn sẽ được chuyển đến trang <strong>/profile</strong>.
+                  You will be redirected to the <strong>/profile</strong> page.
                 </li>
               </ol>
             </div>
 
             <p className="text-muted-foreground text-xs">
-              💡 Nếu chưa đăng nhập, trang Profile sẽ không hiển thị nội dung.
-              Vui lòng đăng nhập để xem và quản lý hồ sơ.
+              💡 If you are not signed in, the Profile page will not display any
+              content. Please sign in to view and manage your profile.
             </p>
           </CardContent>
         </Card>
@@ -452,19 +448,19 @@ export default function InstructionsPage() {
       {/* CTA */}
       <section className="text-center mt-10">
         <p className="text-muted-foreground mb-4">
-          Bạn đã sẵn sàng? Hãy bắt đầu khám phá và chia sẻ ý tưởng!
+          Ready to get started? Explore and share your ideas now!
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild>
             <Link href="/" className="gap-2">
               <Lightbulb className="h-4 w-4" />
-              Khám phá Ideas
+              Explore Ideas
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/about" className="gap-2">
-              Tìm hiểu về GLOCAL STEAM
+              Learn about GLOCAL STEAM
             </Link>
           </Button>
         </div>
