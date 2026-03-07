@@ -32,7 +32,7 @@ function sortIdeas(
 export function useIdeas(initialData?: IdeaWithDetails[]) {
   const [ideas, setIdeas] = useState<IdeaWithDetails[]>(initialData ?? []);
   const [loading, setLoading] = useState(!initialData);
-  const [category, setCategory] = useState<IdeaCategory | "all">("all");
+  const [categories, setCategories] = useState<IdeaCategory[]>([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("newest");
   const supabase = useMemo(() => createClient(), []);
@@ -49,8 +49,8 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
         join_requests(count)
       `);
 
-    if (category !== "all") {
-      query = query.eq("category", category);
+    if (categories.length > 0) {
+      query = query.in("category", categories);
     }
 
     if (search.trim()) {
@@ -70,11 +70,11 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
 
     setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, search]);
+  }, [categories, search]);
 
   // Skip fetch when SSR data is still valid for default filters
   useEffect(() => {
-    if (canSkipFetch.current && category === "all" && !search) {
+    if (canSkipFetch.current && categories.length === 0 && !search) {
       return;
     }
     canSkipFetch.current = false;
@@ -134,8 +134,8 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
   return {
     ideas: sortedIdeas,
     loading,
-    category,
-    setCategory,
+    categories,
+    setCategories,
     search,
     setSearch,
     sort,

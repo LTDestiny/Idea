@@ -23,17 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const categories: (IdeaCategory | "all")[] = [
-  "all",
-  "social",
-  "technology",
-  "education",
-  "health",
-  "environment",
-  "business",
-  "art",
-  "other",
-];
+const allCategories = Object.keys(CATEGORY_LABELS) as IdeaCategory[];
 
 const sortLabels = {
   newest: "Newest",
@@ -42,8 +32,15 @@ const sortLabels = {
 };
 
 export function IdeaList({ initialData }: IdeaListProps = {}) {
-  const { ideas, loading, category, setCategory, setSearch, sort, setSort } =
-    useIdeas(initialData);
+  const {
+    ideas,
+    loading,
+    categories,
+    setCategories,
+    setSearch,
+    sort,
+    setSort,
+  } = useIdeas(initialData);
   const [searchInput, setSearchInput] = useState("");
   // Debounce search
   useEffect(() => {
@@ -52,6 +49,12 @@ export function IdeaList({ initialData }: IdeaListProps = {}) {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchInput, setSearch]);
+
+  const toggleCategory = (cat: IdeaCategory) => {
+    setCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -68,16 +71,24 @@ export function IdeaList({ initialData }: IdeaListProps = {}) {
 
       {/* Filters + Sort */}
       <div className="flex items-center justify-between gap-4">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide flex-1">
-          {categories.map((cat) => (
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide flex-1 flex-wrap">
+          <Button
+            variant={categories.length === 0 ? "default" : "outline"}
+            size="sm"
+            onClick={() => setCategories([])}
+            className="whitespace-nowrap flex-shrink-0"
+          >
+            All
+          </Button>
+          {allCategories.map((cat) => (
             <Button
               key={cat}
-              variant={category === cat ? "default" : "outline"}
+              variant={categories.includes(cat) ? "default" : "outline"}
               size="sm"
-              onClick={() => setCategory(cat)}
+              onClick={() => toggleCategory(cat)}
               className="whitespace-nowrap flex-shrink-0"
             >
-              {cat === "all" ? "All" : CATEGORY_LABELS[cat]}
+              {CATEGORY_LABELS[cat]}
             </Button>
           ))}
         </div>

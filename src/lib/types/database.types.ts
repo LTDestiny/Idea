@@ -1,6 +1,10 @@
 export type IdeaCategory =
-  | "social"
-  | "technology"
+  | "social_sciences"
+  | "it"
+  | "mechanical"
+  | "electrical"
+  | "chemical"
+  | "biotechnology"
   | "education"
   | "health"
   | "environment"
@@ -69,8 +73,12 @@ export interface JoinRequestFormData {
 }
 
 export const CATEGORY_LABELS: Record<IdeaCategory, string> = {
-  social: "Social",
-  technology: "Technology",
+  social_sciences: "Social Sciences",
+  it: "IT",
+  mechanical: "Mechanical Engineering",
+  electrical: "Electric & Electronic Engineering",
+  chemical: "Chemical Engineering",
+  biotechnology: "Biotechnology",
   education: "Education",
   health: "Health",
   environment: "Environment",
@@ -83,17 +91,41 @@ export const CATEGORY_COLORS: Record<
   IdeaCategory,
   { bg: string; text: string; border: string; icon: string }
 > = {
-  social: {
+  social_sciences: {
     bg: "bg-rose-100 dark:bg-rose-950",
     text: "text-rose-700 dark:text-rose-300",
     border: "border border-rose-300 dark:border-rose-700",
     icon: "🤝",
   },
-  technology: {
+  it: {
     bg: "bg-blue-100 dark:bg-blue-950",
     text: "text-blue-700 dark:text-blue-300",
     border: "border border-blue-300 dark:border-blue-700",
     icon: "💻",
+  },
+  mechanical: {
+    bg: "bg-gray-100 dark:bg-gray-950",
+    text: "text-gray-700 dark:text-gray-300",
+    border: "border border-gray-300 dark:border-gray-700",
+    icon: "⚙️",
+  },
+  electrical: {
+    bg: "bg-yellow-100 dark:bg-yellow-950",
+    text: "text-yellow-700 dark:text-yellow-300",
+    border: "border border-yellow-300 dark:border-yellow-700",
+    icon: "⚡",
+  },
+  chemical: {
+    bg: "bg-cyan-100 dark:bg-cyan-950",
+    text: "text-cyan-700 dark:text-cyan-300",
+    border: "border border-cyan-300 dark:border-cyan-700",
+    icon: "🧪",
+  },
+  biotechnology: {
+    bg: "bg-lime-100 dark:bg-lime-950",
+    text: "text-lime-700 dark:text-lime-300",
+    border: "border border-lime-300 dark:border-lime-700",
+    icon: "🧬",
   },
   education: {
     bg: "bg-amber-100 dark:bg-amber-950",
