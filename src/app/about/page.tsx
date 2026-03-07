@@ -197,14 +197,22 @@ export default function AboutPage() {
           <Lightbulb className="h-6 w-6 text-primary" />
           GLOCAL STEAM Project
         </h2>
-        <p className="text-muted-foreground mb-6 leading-relaxed">
+        <p className="text-muted-foreground mb-4 leading-relaxed">
           The <strong>GLOCAL STEAM Project</strong> supports activities in which
-          university students work together to{" "}
-          <strong>1) discover social challenges</strong>,{" "}
-          <strong>2) propose original solutions</strong> by combining multiple
-          academic fields and technologies, and{" "}
-          <strong>3) work to solve these challenges</strong>.
+          university students work together to:
         </p>
+        <ol className="list-decimal list-inside space-y-2 text-muted-foreground mb-6 pl-2">
+          <li>
+            <strong>Discover social challenges</strong>
+          </li>
+          <li>
+            <strong>Propose original solutions</strong> by combining multiple
+            academic fields and technologies
+          </li>
+          <li>
+            <strong>Work to solve these challenges</strong>
+          </li>
+        </ol>
 
         <h3 className="text-lg font-semibold mb-4">Evaluation Criteria</h3>
         <p className="text-sm text-muted-foreground mb-4">

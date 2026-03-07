@@ -15,7 +15,8 @@ import {
 interface IdeaListProps {
   initialData?: IdeaWithDetails[];
 }
-import { Search, Lightbulb, SortAsc } from "lucide-react";
+import { Search, Lightbulb, SortAsc, Plus } from "lucide-react";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,15 +59,23 @@ export function IdeaList({ initialData }: IdeaListProps = {}) {
 
   return (
     <div className="space-y-6">
-      {/* Search bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Search ideas..."
-          className="pl-10 w-full"
-        />
+      {/* Search bar + New Idea */}
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search ideas..."
+            className="pl-10 w-full"
+          />
+        </div>
+        <Button asChild>
+          <Link href="/ideas/new" className="gap-2">
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">New Idea</span>
+          </Link>
+        </Button>
       </div>
 
       {/* Filters + Sort */}

@@ -91,6 +91,7 @@ export default function IdeaDetailPage() {
     } else {
       toast.success("Idea deleted");
       router.push("/");
+      router.refresh();
     }
   }, [supabase, ideaId, router]);
 
