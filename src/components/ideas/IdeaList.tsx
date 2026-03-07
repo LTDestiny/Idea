@@ -45,7 +45,6 @@ export function IdeaList({ initialData }: IdeaListProps = {}) {
   const { ideas, loading, category, setCategory, setSearch, sort, setSort } =
     useIdeas(initialData);
   const [searchInput, setSearchInput] = useState("");
-
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type {
   IdeaWithDetails,
@@ -10,6 +10,25 @@ import type {
 
 type SortOption = "newest" | "most_comments" | "most_interest";
 
+function sortIdeas(
+  data: IdeaWithDetails[],
+  sort: SortOption,
+): IdeaWithDetails[] {
+  if (sort === "newest") return data;
+  const sorted = [...data];
+  if (sort === "most_comments") {
+    sorted.sort(
+      (a, b) => (b.comments[0]?.count || 0) - (a.comments[0]?.count || 0),
+    );
+  } else if (sort === "most_interest") {
+    sorted.sort(
+      (a, b) =>
+        (b.join_requests[0]?.count || 0) - (a.join_requests[0]?.count || 0),
+    );
+  }
+  return sorted;
+}
+
 export function useIdeas(initialData?: IdeaWithDetails[]) {
   const [ideas, setIdeas] = useState<IdeaWithDetails[]>(initialData ?? []);
   const [loading, setLoading] = useState(!initialData);
@@ -17,6 +36,8 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("newest");
   const supabase = useMemo(() => createClient(), []);
+  // Track whether SSR data can still be used (StrictMode-safe: only mutated true→false)
+  const canSkipFetch = useRef(!!initialData);
 
   const fetchIdeas = useCallback(async () => {
     setLoading(true);
@@ -44,29 +65,25 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
       console.error("Error fetching ideas:", error);
       setIdeas([]);
     } else {
-      let sorted = data as IdeaWithDetails[];
-
-      if (sort === "most_comments") {
-        sorted = sorted.sort(
-          (a, b) => (b.comments[0]?.count || 0) - (a.comments[0]?.count || 0),
-        );
-      } else if (sort === "most_interest") {
-        sorted = sorted.sort(
-          (a, b) =>
-            (b.join_requests[0]?.count || 0) - (a.join_requests[0]?.count || 0),
-        );
-      }
-
-      setIdeas(sorted);
+      setIdeas(data as IdeaWithDetails[]);
     }
 
     setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, search, sort]);
+  }, [category, search]);
 
+  // Skip fetch when SSR data is still valid for default filters
   useEffect(() => {
+    if (canSkipFetch.current && category === "all" && !search) {
+      return;
+    }
+    canSkipFetch.current = false;
     fetchIdeas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchIdeas]);
+
+  // Client-side sort — no refetch needed
+  const sortedIdeas = useMemo(() => sortIdeas(ideas, sort), [ideas, sort]);
 
   const createIdea = useCallback(
     async (data: IdeaFormData, creatorId: string) => {
@@ -115,7 +132,7 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
   );
 
   return {
-    ideas,
+    ideas: sortedIdeas,
     loading,
     category,
     setCategory,

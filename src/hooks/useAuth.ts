@@ -12,9 +12,8 @@ export function useAuth() {
   const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
-    // Use getSession() instead of getUser() — reads from local storage instantly,
-    // no network call. Middleware already validates tokens for protected routes.
-    const getUser = async () => {
+    // 1. getSession() reads from localStorage — fast, no network call.
+    const getInitialSession = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -33,11 +32,15 @@ export function useAuth() {
       setLoading(false);
     };
 
-    getUser();
+    getInitialSession();
 
+    // 2. Listen for actual auth changes (sign-in, sign-out, token refresh).
+    //    Skip INITIAL_SESSION since getSession() already handles it.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (_event === "INITIAL_SESSION") return;
+
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 

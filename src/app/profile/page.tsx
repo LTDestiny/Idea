@@ -6,18 +6,41 @@ import { createClient } from "@/lib/supabase/client";
 import { IdeaCard } from "@/components/ideas/IdeaCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserCircle, Lightbulb, Users } from "lucide-react";
-import type { IdeaWithDetails } from "@/lib/types/database.types";
+import { Badge } from "@/components/ui/badge";
+import {
+  UserCircle,
+  Lightbulb,
+  Users,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Send,
+} from "lucide-react";
+import Link from "next/link";
+import type {
+  IdeaWithDetails,
+  JoinRequest,
+  Idea,
+} from "@/lib/types/database.types";
 
 export default function ProfilePage() {
   const { user, profile, loading: authLoading } = useAuth();
   const [myIdeas, setMyIdeas] = useState<IdeaWithDetails[]>([]);
   const [joinedIdeas, setJoinedIdeas] = useState<IdeaWithDetails[]>([]);
+  const [myRequests, setMyRequests] = useState<
+    (JoinRequest & { ideas: Idea })[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const supabase = useMemo(() => createClient(), []);
 
+  // Depend on user.id (string) instead of user object to avoid refetching
+  // on every object reference change
+  const userId = user?.id;
   useEffect(() => {
-    if (!user) return;
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
 
     const fetchData = async () => {
       // My ideas
@@ -26,7 +49,7 @@ export default function ProfilePage() {
         .select(
           "*, profiles!creator_id(*), comments(count), join_requests(count)",
         )
-        .eq("creator_id", user.id)
+        .eq("creator_id", userId)
         .order("created_at", { ascending: false });
 
       setMyIdeas((myData as IdeaWithDetails[]) || []);
@@ -35,7 +58,7 @@ export default function ProfilePage() {
       const { data: joinReqs } = await supabase
         .from("join_requests")
         .select("idea_id")
-        .eq("requester_id", user.id)
+        .eq("requester_id", userId)
         .eq("status", "approved");
 
       if (joinReqs && joinReqs.length > 0) {
@@ -51,12 +74,21 @@ export default function ProfilePage() {
         setJoinedIdeas((joinedData as IdeaWithDetails[]) || []);
       }
 
+      // My requests (all statuses)
+      const { data: reqData } = await supabase
+        .from("join_requests")
+        .select("*, ideas!idea_id(id, title, category)")
+        .eq("requester_id", userId)
+        .order("created_at", { ascending: false });
+
+      setMyRequests((reqData as (JoinRequest & { ideas: Idea })[]) || []);
+
       setLoading(false);
     };
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [userId]);
 
   if (authLoading || loading) {
     return (
@@ -103,6 +135,10 @@ export default function ProfilePage() {
           <TabsTrigger value="joined" className="gap-2">
             <Users className="h-4 w-4" />
             Joined ({joinedIdeas.length})
+          </TabsTrigger>
+          <TabsTrigger value="requests" className="gap-2">
+            <Send className="h-4 w-4" />
+            My Requests ({myRequests.length})
           </TabsTrigger>
         </TabsList>
 
@@ -153,6 +189,58 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {joinedIdeas.map((idea) => (
                 <IdeaCard key={idea.id} idea={idea} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="requests" className="mt-6">
+          {myRequests.length === 0 ? (
+            <div className="text-center py-12 space-y-3">
+              <Send className="h-12 w-12 mx-auto text-muted-foreground/50" />
+              <p className="text-muted-foreground">
+                You haven&apos;t sent any join requests yet.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {myRequests.map((req) => (
+                <Link
+                  key={req.id}
+                  href={`/ideas/${req.idea_id}`}
+                  className="block p-4 border rounded-lg hover:bg-muted/30 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium truncate">
+                        {req.ideas?.title || "Unknown Idea"}
+                      </p>
+                      {req.message && (
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
+                          &quot;{req.message}&quot;
+                        </p>
+                      )}
+                    </div>
+                    {req.status === "pending" && (
+                      <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 gap-1 flex-shrink-0">
+                        <Clock className="h-3 w-3" />
+                        Pending
+                      </Badge>
+                    )}
+                    {req.status === "approved" && (
+                      <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 gap-1 flex-shrink-0">
+                        <CheckCircle2 className="h-3 w-3" />
+                        Approved
+                      </Badge>
+                    )}
+                    {req.status === "rejected" && (
+                      <Badge className="bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 gap-1 flex-shrink-0">
+                        <XCircle className="h-3 w-3" />
+                        Rejected
+                      </Badge>
+                    )}
+                  </div>
+                </Link>
               ))}
             </div>
           )}
