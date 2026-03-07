@@ -90,7 +90,7 @@ serve(async (req) => {
       <html>
       <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #1e293b;">
         <div style="text-align: center; padding: 20px 0; border-bottom: 1px solid #e2e8f0;">
-          <h1 style="font-size: 24px; margin: 0;">💡 STEAM_TUI</h1>
+          <h1 style="font-size: 24px; margin: 0;">💡 STEAM</h1>
         </div>
         
         <div style="padding: 24px 0;">
@@ -112,7 +112,7 @@ serve(async (req) => {
         </div>
         
         <div style="padding: 16px 0; border-top: 1px solid #e2e8f0; text-align: center; color: #94a3b8; font-size: 13px;">
-          <p>STEAM_TUI · Bạn nhận mail này vì bạn là chủ ý tưởng</p>
+          <p>STEAM · Bạn nhận mail này vì bạn là chủ ý tưởng</p>
         </div>
       </body>
       </html>
@@ -126,9 +126,9 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "STEAM_TUI <noreply@resend.dev>",
+        from: "STEAM <noreply@resend.dev>",
         to: ownerProfile.email,
-        subject: `[STEAM_TUI] ${requesterProfile.full_name || "Ai đó"} muốn tham gia ý tưởng "${idea.title}"`,
+        subject: `[STEAM] ${requesterProfile.full_name || "Ai đó"} muốn tham gia ý tưởng "${idea.title}"`,
         html: emailHtml,
       }),
     });

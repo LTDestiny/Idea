@@ -69,11 +69,11 @@ const steamPillars = [
 
 const universities = [
   {
-    abbr: "TUI",
-    fullName: "Tokyo University of Industry",
+    abbr: "TUT",
+    fullName: "Tokyo University of Technology",
     country: "Japan 🇯🇵",
     description:
-      "Tokyo University of Industry — one of Japan's leading universities in technology research, engineering, and innovation.",
+      "Tokyo University of Technology — one of Japan's leading universities in technology research, engineering, and innovation.",
   },
   {
     abbr: "IUH",
@@ -92,7 +92,7 @@ export default function AboutPage() {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Lightbulb className="h-10 w-10 text-primary" />
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            STEAM<span className="text-primary">_</span>TUI
+            STEAM
           </h1>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -142,19 +142,19 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* What is TUI */}
+      {/* Partner Universities */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <Globe className="h-6 w-6 text-primary" />
-          TUI — University as the Bridge
+          Partner Universities
         </h2>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          <strong>TUI</strong> read forward stands for{" "}
-          <strong>Tokyo University (of Industry)</strong>, read backward it
-          becomes <strong>Industrial University (of Ho Chi Minh City)</strong> —
-          the names of two collaborating universities. The word{" "}
-          <strong>&quot;University&quot;</strong> is the bridge, the common
-          ground between Japanese and Vietnamese education.
+          <strong>STEAM</strong> is a collaborative platform between two
+          universities: <strong>Tokyo University of Technology (TUT)</strong> in
+          Japan and{" "}
+          <strong>Industrial University of Ho Chi Minh City (IUH)</strong> in
+          Vietnam. Together, they foster international STEAM collaboration and
+          knowledge exchange.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -183,7 +183,7 @@ export default function AboutPage() {
 
         <div className="mt-8 p-6 rounded-xl bg-primary/5 border border-primary/20 text-center">
           <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Through the <strong>STEAM_TUI</strong> platform, students from both
+            Through the <strong>STEAM</strong> platform, students from both
             universities can share ideas, find collaborators, and develop
             interdisciplinary projects together — breaking through language
             barriers and geographical distances.

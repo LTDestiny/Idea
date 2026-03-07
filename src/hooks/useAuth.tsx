@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
         options: {
           data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `https://idea-hazel.vercel.app/auth/callback`,
         },
       });
       return { data, error };
@@ -152,7 +152,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut,
       updateProfile,
     }),
-    [user, profile, loading, signInWithEmail, signUpWithEmail, signOut, updateProfile],
+    [
+      user,
+      profile,
+      loading,
+      signInWithEmail,
+      signUpWithEmail,
+      signOut,
+      updateProfile,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
