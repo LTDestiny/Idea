@@ -65,11 +65,16 @@ function LoginContent() {
       if (error) {
         if (error.message.includes("already registered")) {
           toast.error("Email is already registered. Please sign in.");
+        } else if (error.message.toLowerCase().includes("rate limit")) {
+          toast.error(
+            "Too many sign-up attempts. Please wait a few minutes and try again.",
+          );
         } else {
           toast.error(error.message || "Sign up failed");
         }
       } else {
-        router.push(`/auth/confirm?email=${encodeURIComponent(email)}`);
+        toast.success("Account created successfully!");
+        router.push(redirect);
       }
     } else {
       const { error } = await signInWithEmail(email, password);
