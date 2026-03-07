@@ -5,6 +5,8 @@ export type IdeaCategory =
   | "electrical"
   | "chemical"
   | "biotechnology"
+  | "civil_engineering"
+  | "tourism"
   | "education"
   | "health"
   | "environment"
@@ -79,6 +81,8 @@ export const CATEGORY_LABELS: Record<IdeaCategory, string> = {
   electrical: "Electric & Electronic Engineering",
   chemical: "Chemical Engineering",
   biotechnology: "Biotechnology",
+  civil_engineering: "Civil Engineering",
+  tourism: "Tourism",
   education: "Education",
   health: "Health",
   environment: "Environment",
@@ -126,6 +130,18 @@ export const CATEGORY_COLORS: Record<
     text: "text-lime-700 dark:text-lime-300",
     border: "border border-lime-300 dark:border-lime-700",
     icon: "🧬",
+  },
+  civil_engineering: {
+    bg: "bg-stone-100 dark:bg-stone-950",
+    text: "text-stone-700 dark:text-stone-300",
+    border: "border border-stone-300 dark:border-stone-700",
+    icon: "🏗️",
+  },
+  tourism: {
+    bg: "bg-sky-100 dark:bg-sky-950",
+    text: "text-sky-700 dark:text-sky-300",
+    border: "border border-sky-300 dark:border-sky-700",
+    icon: "✈️",
   },
   education: {
     bg: "bg-amber-100 dark:bg-amber-950",

@@ -6,4 +6,5 @@ ALTER TYPE idea_category ADD VALUE IF NOT EXISTS 'mechanical';
 ALTER TYPE idea_category ADD VALUE IF NOT EXISTS 'electrical';
 ALTER TYPE idea_category ADD VALUE IF NOT EXISTS 'chemical';
 ALTER TYPE idea_category ADD VALUE IF NOT EXISTS 'biotechnology';
+ALTER TYPE idea_category ADD VALUE IF NOT EXISTS 'civil_engineering';
 ALTER TYPE idea_category ADD VALUE IF NOT EXISTS 'tourism';
