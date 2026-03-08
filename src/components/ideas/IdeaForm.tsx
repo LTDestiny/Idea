@@ -35,6 +35,7 @@ export function IdeaForm({
     initialData?.category || [],
   );
   const [lookingFor, setLookingFor] = useState(initialData?.looking_for || "");
+  const [zaloLink, setZaloLink] = useState(initialData?.zalo_link || "");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,6 +60,7 @@ export function IdeaForm({
       description: description.trim(),
       category,
       looking_for: lookingFor.trim(),
+      zalo_link: zaloLink.trim(),
     });
     setLoading(false);
 
@@ -154,6 +156,20 @@ export function IdeaForm({
         />
         <p className="text-xs text-muted-foreground text-right">
           {lookingFor.length}/500
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="zalo-link">Zalo Group Link (Optional)</Label>
+        <Input
+          id="zalo-link"
+          value={zaloLink}
+          onChange={(e) => setZaloLink(e.target.value.slice(0, 500))}
+          placeholder="https://zalo.me/g/..."
+          maxLength={500}
+        />
+        <p className="text-xs text-muted-foreground text-right">
+          {zaloLink.length}/500
         </p>
       </div>
 

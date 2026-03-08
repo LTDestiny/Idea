@@ -94,6 +94,7 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
           description: data.description,
           category: data.category,
           looking_for: data.looking_for || null,
+          zalo_link: data.zalo_link || null,
           creator_id: creatorId,
         })
         .select()
@@ -113,6 +114,7 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
           description: data.description,
           category: data.category,
           looking_for: data.looking_for || null,
+          zalo_link: data.zalo_link || null,
         })
         .eq("id", id)
         .select()

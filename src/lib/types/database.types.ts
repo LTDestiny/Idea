@@ -29,6 +29,7 @@ export interface Idea {
   description: string;
   category: IdeaCategory[];
   looking_for: string | null;
+  zalo_link: string | null;
   creator_id: string;
   created_at: string;
   updated_at: string;
@@ -67,6 +68,7 @@ export interface IdeaFormData {
   description: string;
   category: IdeaCategory[];
   looking_for: string;
+  zalo_link: string;
 }
 
 export interface JoinRequestFormData {

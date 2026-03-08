@@ -72,7 +72,8 @@ const CommentItem = memo(function CommentItem({
           </p>
 
           {/* Reply button — only show on top-level comments (depth 0) to keep 2-level max */}
-          {isAuthenticated && onReply && depth === 0 && (
+          {/* Reply button — show up to depth 1 to allow max 2 levels of nesting */}
+          {isAuthenticated && onReply && depth < 2 && (
             <Button
               variant="ghost"
               size="sm"

@@ -25,7 +25,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { UserCircle, MessageSquare, Users, Crown } from "lucide-react";
+import {
+  UserCircle,
+  MessageSquare,
+  Users,
+  Crown,
+  ExternalLink,
+} from "lucide-react";
 import { toast } from "sonner";
 import type { Idea, Profile } from "@/lib/types/database.types";
 
@@ -197,6 +203,21 @@ export default function IdeaDetailPage() {
             <div className="space-y-3 p-4 bg-muted/30 rounded-lg border">
               <h3 className="text-sm font-semibold">🔍 Looking for:</h3>
               <p className="text-sm whitespace-pre-wrap">{idea.looking_for}</p>
+            </div>
+          )}
+
+          {/* Zalo group link */}
+          {idea.zalo_link && /^https?:\/\//i.test(idea.zalo_link) && (
+            <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+              <a
+                href={idea.zalo_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+              >
+                💬 Join Zalo Group
+                <ExternalLink className="h-4 w-4" />
+              </a>
             </div>
           )}
 
