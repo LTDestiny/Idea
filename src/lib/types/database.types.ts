@@ -71,6 +71,24 @@ export interface IdeaFormData {
   zalo_link: string;
 }
 
+export type NotificationType =
+  | "comment"
+  | "join_request"
+  | "approved"
+  | "rejected";
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  idea_id: string;
+  type: NotificationType;
+  actor_id: string;
+  message: string;
+  read: boolean;
+  created_at: string;
+  actor?: Profile;
+}
+
 export interface JoinRequestFormData {
   message: string;
   relevant_skills: string[];

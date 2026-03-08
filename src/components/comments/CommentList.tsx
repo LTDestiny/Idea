@@ -36,6 +36,21 @@ function timeAgo(dateStr: string): string {
   return dateFormatter.format(date);
 }
 
+/** Render comment content, highlighting @[Name] mentions */
+function renderContent(content: string) {
+  const mentionMatch = content.match(/^@\[([^\]]+)\]\s?/);
+  if (mentionMatch) {
+    const name = mentionMatch[1];
+    const rest = content.slice(mentionMatch[0].length);
+    return (
+      <>
+        <span className="text-primary font-semibold">@{name}</span> {rest}
+      </>
+    );
+  }
+  return content;
+}
+
 const CommentItem = memo(function CommentItem({
   comment,
   onReply,
@@ -49,9 +64,15 @@ const CommentItem = memo(function CommentItem({
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
 
+  // When replying to a reply (depth > 0), resolve to root parent and add @mention
+  const replyParentId =
+    depth === 0 ? comment.id : comment.parent_id || comment.id;
+  const mentionName =
+    depth > 0 ? comment.profiles?.full_name || "Anonymous" : undefined;
+
   const handleReply = async (content: string) => {
     if (!onReply) return { error: new Error("No reply handler") };
-    return onReply(content, comment.id);
+    return onReply(content, replyParentId);
   };
 
   return (
@@ -68,12 +89,11 @@ const CommentItem = memo(function CommentItem({
             </span>
           </div>
           <p className="text-sm mt-1 whitespace-pre-wrap break-words">
-            {comment.content}
+            {renderContent(comment.content)}
           </p>
 
-          {/* Reply button — only show on top-level comments (depth 0) to keep 2-level max */}
-          {/* Reply button — show up to depth 1 to allow max 2 levels of nesting */}
-          {isAuthenticated && onReply && depth < 2 && (
+          {/* Reply button — available on all comments */}
+          {isAuthenticated && onReply && (
             <Button
               variant="ghost"
               size="sm"
@@ -93,13 +113,14 @@ const CommentItem = memo(function CommentItem({
                 placeholder={`Reply to ${comment.profiles?.full_name || "Anonymous"}...`}
                 compact
                 onCancel={() => setShowReplyForm(false)}
+                mentionName={mentionName}
               />
             </div>
           )}
         </div>
       </div>
 
-      {/* Render replies */}
+      {/* Render replies — flat (all at depth 1, no further nesting) */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="mt-3 space-y-3">
           {comment.replies.map((reply) => (
@@ -108,7 +129,7 @@ const CommentItem = memo(function CommentItem({
               comment={reply}
               onReply={onReply}
               isAuthenticated={isAuthenticated}
-              depth={depth + 1}
+              depth={1}
             />
           ))}
         </div>

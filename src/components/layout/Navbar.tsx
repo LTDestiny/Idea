@@ -17,6 +17,7 @@ import {
   Users,
   BookOpen,
 } from "lucide-react";
+import { NotificationBell } from "./NotificationBell";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -76,26 +77,29 @@ export function Navbar() {
           {loading ? (
             <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
           ) : user ? (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/profile"
-                className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
-              >
-                <UserCircle className="h-6 w-6" />
-                <span className="max-w-[120px] truncate">
-                  {profile?.full_name || "User"}
-                </span>
-              </Link>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={signOut}
-                className="gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </Button>
-            </div>
+            <>
+              <NotificationBell userId={user.id} />
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
+                >
+                  <UserCircle className="h-6 w-6" />
+                  <span className="max-w-[120px] truncate">
+                    {profile?.full_name || "User"}
+                  </span>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={signOut}
+                  className="gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
+            </>
           ) : (
             <Button asChild variant="outline" size="sm" className="gap-2">
               <Link href="/login">

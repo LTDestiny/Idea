@@ -7,8 +7,14 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { CategoryBadge } from "./CategoryBadge";
-import { UserCircle, MessageSquare, Users } from "lucide-react";
+import { UserCircle, MessageSquare, Users, Sparkles } from "lucide-react";
 import type { IdeaWithDetails } from "@/lib/types/database.types";
+
+function isNewIdea(dateStr: string): boolean {
+  const created = new Date(dateStr).getTime();
+  const now = Date.now();
+  return now - created < 60 * 60 * 1000; // 1 hour
+}
 
 interface IdeaCardProps {
   idea: IdeaWithDetails;
@@ -33,9 +39,17 @@ export const IdeaCard = memo(function IdeaCard({ idea }: IdeaCardProps) {
       <Card className="h-full transition-all duration-200 hover:shadow-md hover:scale-[1.01] cursor-pointer">
         <CardHeader className="pb-3">
           <div className="space-y-2">
-            <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
-              {idea.title}
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
+                {idea.title}
+              </h3>
+              {isNewIdea(idea.created_at) && (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 text-[10px] font-bold uppercase flex-shrink-0 border border-green-300 dark:border-green-700">
+                  <Sparkles className="h-3 w-3" />
+                  New
+                </span>
+              )}
+            </div>
             <div className="flex gap-1.5 flex-wrap">
               {idea.category.map((cat) => (
                 <CategoryBadge key={cat} category={cat} />

@@ -11,6 +11,7 @@ interface CommentFormProps {
   placeholder?: string;
   compact?: boolean;
   onCancel?: () => void;
+  mentionName?: string;
 }
 
 export function CommentForm({
@@ -18,8 +19,10 @@ export function CommentForm({
   placeholder = "Write a comment...",
   compact = false,
   onCancel,
+  mentionName,
 }: CommentFormProps) {
-  const [content, setContent] = useState("");
+  const prefix = mentionName ? `@[${mentionName}] ` : "";
+  const [content, setContent] = useState(prefix);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {

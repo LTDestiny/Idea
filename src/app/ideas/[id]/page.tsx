@@ -104,17 +104,39 @@ export default function IdeaDetailPage() {
   const handleAddComment = useCallback(
     async (content: string) => {
       if (!user) return { error: new Error("Not authenticated") };
-      return addComment(content, user.id);
+      const result = await addComment(content, user.id);
+      if (!result.error) {
+        supabase
+          .rpc("create_idea_notification", {
+            p_idea_id: ideaId,
+            p_actor_id: user.id,
+            p_type: "comment",
+            p_message: "commented on your idea",
+          })
+          .then();
+      }
+      return result;
     },
-    [user, addComment],
+    [user, addComment, supabase, ideaId],
   );
 
   const handleReplyComment = useCallback(
     async (content: string, parentId: string) => {
       if (!user) return { error: new Error("Not authenticated") };
-      return addComment(content, user.id, parentId);
+      const result = await addComment(content, user.id, parentId);
+      if (!result.error) {
+        supabase
+          .rpc("create_idea_notification", {
+            p_idea_id: ideaId,
+            p_actor_id: user.id,
+            p_type: "comment",
+            p_message: "replied to a comment",
+          })
+          .then();
+      }
+      return result;
     },
-    [user, addComment],
+    [user, addComment, supabase, ideaId],
   );
 
   const handleCreateJoinRequest = useCallback(
@@ -122,6 +144,19 @@ export default function IdeaDetailPage() {
       if (!user) return { error: new Error("Not authenticated") };
 
       const result = await createRequest(data, user.id);
+
+      // Create notification for the idea owner
+      if (!result.error && result.data) {
+        supabase
+          .rpc("create_idea_notification", {
+            p_idea_id: ideaId,
+            p_actor_id: user.id,
+            p_type: "join_request",
+            p_message: "requested to join your idea",
+            p_target_user_id: idea?.creator_id,
+          })
+          .then();
+      }
 
       // Call edge function for email notification (fire & forget)
       if (!result.error && result.data) {
@@ -326,8 +361,40 @@ export default function IdeaDetailPage() {
                 <TabsContent value="requests" className="p-4">
                   <JoinRequestList
                     requests={requests}
-                    onApprove={(id) => updateRequestStatus(id, "approved")}
-                    onReject={(id) => updateRequestStatus(id, "rejected")}
+                    onApprove={async (id) => {
+                      const result = await updateRequestStatus(id, "approved");
+                      if (!result.error) {
+                        const req = requests.find((r) => r.id === id);
+                        if (req && user) {
+                          supabase
+                            .rpc("create_idea_notification", {
+                              p_idea_id: ideaId,
+                              p_actor_id: user.id,
+                              p_type: "approved",
+                              p_message: "approved your join request",
+                              p_target_user_id: req.requester_id,
+                            })
+                            .then();
+                        }
+                      }
+                    }}
+                    onReject={async (id) => {
+                      const result = await updateRequestStatus(id, "rejected");
+                      if (!result.error) {
+                        const req = requests.find((r) => r.id === id);
+                        if (req && user) {
+                          supabase
+                            .rpc("create_idea_notification", {
+                              p_idea_id: ideaId,
+                              p_actor_id: user.id,
+                              p_type: "rejected",
+                              p_message: "rejected your join request",
+                              p_target_user_id: req.requester_id,
+                            })
+                            .then();
+                        }
+                      }
+                    }}
                   />
                 </TabsContent>
               </Tabs>

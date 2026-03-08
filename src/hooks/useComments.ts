@@ -13,11 +13,28 @@ function buildCommentTree(flatComments: Comment[]): Comment[] {
     map.set(comment.id, { ...comment, replies: [] });
   }
 
-  // Build tree
+  // Find top-level ancestor for any comment
+  function findRoot(commentId: string): string {
+    let current = commentId;
+    for (let i = 0; i < 10; i++) {
+      const c = map.get(current);
+      if (!c || !c.parent_id) return current;
+      current = c.parent_id;
+    }
+    return current;
+  }
+
+  // Build flat tree: all replies go directly under the root (depth 1 max)
   for (const comment of flatComments) {
     const node = map.get(comment.id)!;
-    if (comment.parent_id && map.has(comment.parent_id)) {
-      map.get(comment.parent_id)!.replies!.push(node);
+    if (comment.parent_id) {
+      const rootId = findRoot(comment.id);
+      const root = map.get(rootId);
+      if (root && root !== node) {
+        root.replies!.push(node);
+      } else {
+        roots.push(node);
+      }
     } else {
       roots.push(node);
     }
