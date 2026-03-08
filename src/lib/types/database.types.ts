@@ -73,6 +73,7 @@ export interface IdeaFormData {
 
 export type NotificationType =
   | "comment"
+  | "reply"
   | "join_request"
   | "approved"
   | "rejected";

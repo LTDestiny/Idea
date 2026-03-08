@@ -49,7 +49,6 @@ export function useComments(ideaId: string) {
   const supabase = useMemo(() => createClient(), []);
 
   const fetchComments = useCallback(async () => {
-    setLoading(true);
     const { data, error } = await supabase
       .from("comments")
       .select("*, profiles!user_id(*)")
@@ -62,12 +61,35 @@ export function useComments(ideaId: string) {
       setComments(data as Comment[]);
     }
     setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ideaId]);
+  }, [ideaId, supabase]);
 
   useEffect(() => {
+    setLoading(true);
     fetchComments();
   }, [fetchComments]);
+
+  // Realtime subscription for comment changes
+  useEffect(() => {
+    const channel = supabase
+      .channel(`comments:idea_id=eq.${ideaId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "comments",
+          filter: `idea_id=eq.${ideaId}`,
+        },
+        () => {
+          fetchComments();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [ideaId, supabase, fetchComments]);
 
   const addComment = useCallback(
     async (content: string, userId: string, parentId?: string) => {

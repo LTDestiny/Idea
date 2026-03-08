@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 import type { Notification } from "@/lib/types/database.types";
 
 export function useNotifications(userId?: string) {
@@ -40,7 +41,7 @@ export function useNotifications(userId?: string) {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  // Realtime subscription for new notifications
+  // Realtime subscription for new notifications — with toast
   useEffect(() => {
     if (!userId) return;
 
@@ -54,8 +55,23 @@ export function useNotifications(userId?: string) {
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
-        () => {
-          fetchNotifications();
+        async (payload) => {
+          const newRow = payload.new as { id: string };
+          const { data } = await supabase
+            .from("notifications")
+            .select("*, actor:profiles!actor_id(*)")
+            .eq("id", newRow.id)
+            .single();
+
+          if (data) {
+            const notification = data as Notification;
+            setNotifications((prev) => {
+              if (prev.some((n) => n.id === notification.id)) return prev;
+              return [notification, ...prev];
+            });
+            const actorName = notification.actor?.full_name || "Someone";
+            toast.info(`${actorName} ${notification.message}`);
+          }
         },
       )
       .subscribe();
@@ -63,7 +79,7 @@ export function useNotifications(userId?: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, supabase, fetchNotifications]);
+  }, [userId, supabase]);
 
   const markAsRead = useCallback(
     async (notificationId: string) => {

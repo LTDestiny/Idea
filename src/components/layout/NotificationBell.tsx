@@ -6,6 +6,7 @@ import {
   Bell,
   CheckCheck,
   MessageSquare,
+  Reply,
   UserPlus,
   UserCheck,
   UserX,
@@ -36,6 +37,7 @@ function timeAgo(dateStr: string): string {
 
 const TYPE_ICON: Record<string, typeof MessageSquare> = {
   comment: MessageSquare,
+  reply: Reply,
   join_request: UserPlus,
   approved: UserCheck,
   rejected: UserX,

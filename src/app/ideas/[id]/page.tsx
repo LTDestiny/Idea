@@ -89,6 +89,41 @@ export default function IdeaDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ideaId]);
 
+  // Realtime subscription for idea updates
+  useEffect(() => {
+    const channel = supabase
+      .channel(`idea:id=eq.${ideaId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "ideas",
+          filter: `id=eq.${ideaId}`,
+        },
+        async (payload) => {
+          if (payload.eventType === "DELETE") {
+            toast.info("This idea has been deleted");
+            router.push("/");
+          } else if (payload.eventType === "UPDATE") {
+            const { data } = await supabase
+              .from("ideas")
+              .select("*, profiles!creator_id(*)")
+              .eq("id", ideaId)
+              .single();
+            if (data) {
+              setIdea(data as Idea & { profiles: Profile });
+            }
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [ideaId, supabase, router]);
+
   const handleDelete = useCallback(async () => {
     const { error } = await supabase.from("ideas").delete().eq("id", ideaId);
 
@@ -121,7 +156,7 @@ export default function IdeaDetailPage() {
   );
 
   const handleReplyComment = useCallback(
-    async (content: string, parentId: string) => {
+    async (content: string, parentId: string, replyToUserId?: string) => {
       if (!user) return { error: new Error("Not authenticated") };
       const result = await addComment(content, user.id, parentId);
       if (!result.error) {
@@ -129,8 +164,9 @@ export default function IdeaDetailPage() {
           .rpc("create_idea_notification", {
             p_idea_id: ideaId,
             p_actor_id: user.id,
-            p_type: "comment",
+            p_type: "reply",
             p_message: "replied to a comment",
+            p_also_notify_user_id: replyToUserId || null,
           })
           .then();
       }

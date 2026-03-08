@@ -40,8 +40,6 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
   const canSkipFetch = useRef(!!initialData);
 
   const fetchIdeas = useCallback(async () => {
-    setLoading(true);
-
     let query = supabase.from("ideas").select(`
         *,
         profiles!creator_id(*),
@@ -72,15 +70,42 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, search]);
 
+  const fetchIdeasRef = useRef(fetchIdeas);
+  fetchIdeasRef.current = fetchIdeas;
+
   // Skip fetch when SSR data is still valid for default filters
   useEffect(() => {
     if (canSkipFetch.current && categories.length === 0 && !search) {
       return;
     }
     canSkipFetch.current = false;
+    setLoading(true);
     fetchIdeas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchIdeas]);
+
+  // Realtime subscription for idea changes
+  useEffect(() => {
+    const channel = supabase
+      .channel("ideas-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "ideas",
+        },
+        () => {
+          canSkipFetch.current = false;
+          fetchIdeasRef.current();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
 
   // Client-side sort — no refetch needed
   const sortedIdeas = useMemo(() => sortIdeas(ideas, sort), [ideas, sort]);

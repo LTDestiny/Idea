@@ -10,7 +10,11 @@ import type { Comment } from "@/lib/types/database.types";
 interface CommentListProps {
   comments: Comment[];
   loading: boolean;
-  onReply?: (content: string, parentId: string) => Promise<{ error: unknown }>;
+  onReply?: (
+    content: string,
+    parentId: string,
+    replyToUserId?: string,
+  ) => Promise<{ error: unknown }>;
   isAuthenticated?: boolean;
 }
 
@@ -58,7 +62,11 @@ const CommentItem = memo(function CommentItem({
   depth = 0,
 }: {
   comment: Comment;
-  onReply?: (content: string, parentId: string) => Promise<{ error: unknown }>;
+  onReply?: (
+    content: string,
+    parentId: string,
+    replyToUserId?: string,
+  ) => Promise<{ error: unknown }>;
   isAuthenticated?: boolean;
   depth?: number;
 }) {
@@ -72,7 +80,7 @@ const CommentItem = memo(function CommentItem({
 
   const handleReply = async (content: string) => {
     if (!onReply) return { error: new Error("No reply handler") };
-    return onReply(content, replyParentId);
+    return onReply(content, replyParentId, comment.user_id);
   };
 
   return (
