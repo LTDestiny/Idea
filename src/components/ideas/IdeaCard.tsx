@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Card,
@@ -34,6 +34,12 @@ export const IdeaCard = memo(function IdeaCard({ idea }: IdeaCardProps) {
   const commentCount = idea.comments?.[0]?.count || 0;
   const joinCount = idea.join_requests?.[0]?.count || 0;
 
+  // Compute "new" status on client only to avoid hydration mismatch
+  const [isNew, setIsNew] = useState(false);
+  useEffect(() => {
+    setIsNew(isNewIdea(idea.created_at));
+  }, [idea.created_at]);
+
   return (
     <Link href={`/ideas/${idea.id}`} className="block group">
       <Card className="h-full transition-all duration-200 hover:shadow-md hover:scale-[1.01] cursor-pointer">
@@ -43,7 +49,7 @@ export const IdeaCard = memo(function IdeaCard({ idea }: IdeaCardProps) {
               <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
                 {idea.title}
               </h3>
-              {isNewIdea(idea.created_at) && (
+              {isNew && (
                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 text-[10px] font-bold uppercase flex-shrink-0 border border-green-300 dark:border-green-700">
                   <Sparkles className="h-3 w-3" />
                   New

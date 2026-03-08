@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types/database.types";
+import { NotificationBell } from "./NotificationBell";
 
 interface MobileMenuProps {
   open: boolean;
@@ -115,17 +116,20 @@ export function MobileMenu({
 
           {user ? (
             <>
-              <Button
-                asChild
-                variant="ghost"
-                className="justify-start gap-3 h-11"
-                onClick={onClose}
-              >
-                <Link href="/profile">
-                  <UserCircle className="h-4 w-4" />
-                  {profile?.full_name || "Account"}
-                </Link>
-              </Button>
+              <div className="flex items-center justify-between px-2">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="justify-start gap-3 h-11 flex-1"
+                  onClick={onClose}
+                >
+                  <Link href="/profile">
+                    <UserCircle className="h-4 w-4" />
+                    {profile?.full_name || "Account"}
+                  </Link>
+                </Button>
+                <NotificationBell userId={user.id} />
+              </div>
               <Button
                 variant="ghost"
                 className="justify-start gap-3 h-11 text-destructive"

@@ -17,6 +17,17 @@ export const CategoryBadge = memo(function CategoryBadge({
   const colors = CATEGORY_COLORS[category];
   const label = CATEGORY_LABELS[category];
 
+  if (!colors || !label) {
+    return (
+      <span
+        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 ${className || ""}`}
+      >
+        <span>📌</span>
+        {category}
+      </span>
+    );
+  }
+
   return (
     <span
       className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${colors.bg} ${colors.text} ${colors.border} ${className || ""}`}

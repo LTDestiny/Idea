@@ -377,6 +377,7 @@ export default function IdeaDetailPage() {
                             .then();
                         }
                       }
+                      return result;
                     }}
                     onReject={async (id) => {
                       const result = await updateRequestStatus(id, "rejected");
@@ -394,6 +395,7 @@ export default function IdeaDetailPage() {
                             .then();
                         }
                       }
+                      return result;
                     }}
                   />
                 </TabsContent>
