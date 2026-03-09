@@ -33,6 +33,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
+import { LikeButton } from "@/components/ideas/LikeButton";
 import type { Idea, Profile } from "@/lib/types/database.types";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -61,6 +62,7 @@ export default function IdeaDetailPage() {
     useJoinRequests(ideaId, user?.id);
 
   const [idea, setIdea] = useState<(Idea & { profiles: Profile }) | null>(null);
+  const [likeCount, setLikeCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [joinModalOpen, setJoinModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -69,19 +71,26 @@ export default function IdeaDetailPage() {
 
   useEffect(() => {
     const fetchIdea = async () => {
-      const { data, error } = await supabase
-        .from("ideas")
-        .select("*, profiles!creator_id(*)")
-        .eq("id", ideaId)
-        .single();
+      const [ideaRes, likesRes] = await Promise.all([
+        supabase
+          .from("ideas")
+          .select("*, profiles!creator_id(*)")
+          .eq("id", ideaId)
+          .single(),
+        supabase
+          .from("idea_likes")
+          .select("id", { count: "exact", head: true })
+          .eq("idea_id", ideaId),
+      ]);
 
-      if (error || !data) {
+      if (ideaRes.error || !ideaRes.data) {
         toast.error("Idea not found");
         router.push("/");
         return;
       }
 
-      setIdea(data as Idea & { profiles: Profile });
+      setIdea(ideaRes.data as Idea & { profiles: Profile });
+      setLikeCount(likesRes.count ?? 0);
       setLoading(false);
     };
 
@@ -137,9 +146,9 @@ export default function IdeaDetailPage() {
   }, [supabase, ideaId, router]);
 
   const handleAddComment = useCallback(
-    async (content: string) => {
+    async (content: string, imageUrl?: string) => {
       if (!user) return { error: new Error("Not authenticated") };
-      const result = await addComment(content, user.id);
+      const result = await addComment(content, user.id, undefined, imageUrl);
       if (!result.error) {
         supabase
           .rpc("create_idea_notification", {
@@ -156,9 +165,9 @@ export default function IdeaDetailPage() {
   );
 
   const handleReplyComment = useCallback(
-    async (content: string, parentId: string, replyToUserId?: string) => {
+    async (content: string, parentId: string, replyToUserId?: string, imageUrl?: string) => {
       if (!user) return { error: new Error("Not authenticated") };
-      const result = await addComment(content, user.id, parentId);
+      const result = await addComment(content, user.id, parentId, imageUrl);
       if (!result.error) {
         supabase
           .rpc("create_idea_notification", {
@@ -240,7 +249,10 @@ export default function IdeaDetailPage() {
           {/* Header */}
           <div className="space-y-4">
             <div className="space-y-3">
-              <h1 className="text-2xl sm:text-3xl font-bold">{idea.title}</h1>
+              <div className="flex items-start justify-between gap-4">
+                <h1 className="text-2xl sm:text-3xl font-bold">{idea.title}</h1>
+                <LikeButton ideaId={ideaId} initialCount={likeCount} size="md" />
+              </div>
               <div className="flex gap-2 flex-wrap">
                 {idea.category.map((cat) => (
                   <CategoryBadge key={cat} category={cat} />
@@ -268,6 +280,22 @@ export default function IdeaDetailPage() {
           <div className="prose prose-sm dark:prose-invert max-w-none">
             <p className="whitespace-pre-wrap">{idea.description}</p>
           </div>
+
+          {/* Idea images */}
+          {idea.image_urls && idea.image_urls.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {idea.image_urls.map((url, i) => (
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={`Image ${i + 1}`}
+                    className="w-full h-40 object-cover rounded-md border hover:opacity-90 transition-opacity"
+                  />
+                </a>
+              ))}
+            </div>
+          )}
 
           {/* Looking for */}
           {idea.looking_for && (

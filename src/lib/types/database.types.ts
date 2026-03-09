@@ -30,6 +30,7 @@ export interface Idea {
   category: IdeaCategory[];
   looking_for: string | null;
   zalo_link: string | null;
+  image_urls: string[];
   creator_id: string;
   created_at: string;
   updated_at: string;
@@ -39,6 +40,7 @@ export interface IdeaWithDetails extends Idea {
   profiles: Profile;
   comments: { count: number }[];
   join_requests: { count: number }[];
+  idea_likes: { count: number }[];
 }
 
 export interface Comment {
@@ -46,6 +48,7 @@ export interface Comment {
   idea_id: string;
   user_id: string;
   content: string;
+  image_url: string | null;
   parent_id: string | null;
   created_at: string;
   profiles: Profile;
@@ -69,6 +72,7 @@ export interface IdeaFormData {
   category: IdeaCategory[];
   looking_for: string;
   zalo_link: string;
+  image_urls: string[];
 }
 
 export type NotificationType =

@@ -29,6 +29,7 @@ export default function NewIdeaPage() {
           category: data.category,
           looking_for: data.looking_for || null,
           zalo_link: data.zalo_link || null,
+          image_urls: data.image_urls ?? [],
           creator_id: user.id,
         })
         .select()

@@ -64,6 +64,7 @@ export default function EditIdeaPage() {
           category: data.category,
           looking_for: data.looking_for || null,
           zalo_link: data.zalo_link || null,
+          image_urls: data.image_urls ?? [],
         })
         .eq("id", ideaId);
 
@@ -105,6 +106,7 @@ export default function EditIdeaPage() {
           category: idea.category,
           looking_for: idea.looking_for || "",
           zalo_link: idea.zalo_link || "",
+          image_urls: idea.image_urls || [],
         }}
         onSubmit={handleSubmit}
         submitLabel="Save Changes"

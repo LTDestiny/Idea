@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import {
   CATEGORY_LABELS,
   CATEGORY_COLORS,
@@ -36,6 +37,7 @@ export function IdeaForm({
   );
   const [lookingFor, setLookingFor] = useState(initialData?.looking_for || "");
   const [zaloLink, setZaloLink] = useState(initialData?.zalo_link || "");
+  const [imageUrls, setImageUrls] = useState<string[]>(initialData?.image_urls || []);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,6 +63,7 @@ export function IdeaForm({
       category,
       looking_for: lookingFor.trim(),
       zalo_link: zaloLink.trim(),
+      image_urls: imageUrls,
     });
     setLoading(false);
 
@@ -171,6 +174,11 @@ export function IdeaForm({
         <p className="text-xs text-muted-foreground text-right">
           {zaloLink.length}/500
         </p>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Images (Optional, max 5)</Label>
+        <ImageUpload value={imageUrls} onChange={setImageUrls} max={5} />
       </div>
 
       <div className="flex gap-3 pt-4">

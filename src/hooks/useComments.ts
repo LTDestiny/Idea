@@ -92,12 +92,13 @@ export function useComments(ideaId: string) {
   }, [ideaId, supabase, fetchComments]);
 
   const addComment = useCallback(
-    async (content: string, userId: string, parentId?: string) => {
+    async (content: string, userId: string, parentId?: string, imageUrl?: string) => {
       const insertData: {
         idea_id: string;
         user_id: string;
         content: string;
         parent_id?: string;
+        image_url?: string;
       } = {
         idea_id: ideaId,
         user_id: userId,
@@ -106,6 +107,10 @@ export function useComments(ideaId: string) {
 
       if (parentId) {
         insertData.parent_id = parentId;
+      }
+
+      if (imageUrl) {
+        insertData.image_url = imageUrl;
       }
 
       const { data, error } = await supabase
