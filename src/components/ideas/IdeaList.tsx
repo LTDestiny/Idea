@@ -29,7 +29,8 @@ const allCategories = Object.keys(CATEGORY_LABELS) as IdeaCategory[];
 const sortLabels = {
   newest: "Newest",
   most_comments: "Most Comments",
-  most_interest: "Most Interest",
+  most_liked: "Most Liked",
+  most_members: "Most Members",
 };
 
 export function IdeaList({ initialData }: IdeaListProps = {}) {
@@ -114,7 +115,7 @@ export function IdeaList({ initialData }: IdeaListProps = {}) {
               ([key, label]) => (
                 <DropdownMenuItem
                   key={key}
-                  onClick={() => setSort(key)}
+                  onClick={() => setSort(key as typeof sort)}
                   className={sort === key ? "bg-accent" : ""}
                 >
                   {label}

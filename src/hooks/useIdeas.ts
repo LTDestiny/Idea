@@ -8,7 +8,7 @@ import type {
   IdeaFormData,
 } from "@/lib/types/database.types";
 
-type SortOption = "newest" | "most_comments" | "most_interest";
+type SortOption = "newest" | "most_comments" | "most_liked" | "most_members";
 
 function sortIdeas(
   data: IdeaWithDetails[],
@@ -20,7 +20,12 @@ function sortIdeas(
     sorted.sort(
       (a, b) => (b.comments[0]?.count || 0) - (a.comments[0]?.count || 0),
     );
-  } else if (sort === "most_interest") {
+  } else if (sort === "most_liked") {
+    sorted.sort(
+      (a, b) =>
+        (b.idea_likes[0]?.count || 0) - (a.idea_likes[0]?.count || 0),
+    );
+  } else if (sort === "most_members") {
     sorted.sort(
       (a, b) =>
         (b.join_requests[0]?.count || 0) - (a.join_requests[0]?.count || 0),
@@ -44,7 +49,8 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
         *,
         profiles!creator_id(*),
         comments(count),
-        join_requests(count)
+        join_requests(count),
+        idea_likes(count)
       `);
 
     if (categories.length > 0) {
@@ -120,6 +126,7 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
           category: data.category,
           looking_for: data.looking_for || null,
           zalo_link: data.zalo_link || null,
+          image_urls: data.image_urls ?? [],
           creator_id: creatorId,
         })
         .select()
@@ -140,6 +147,7 @@ export function useIdeas(initialData?: IdeaWithDetails[]) {
           category: data.category,
           looking_for: data.looking_for || null,
           zalo_link: data.zalo_link || null,
+          image_urls: data.image_urls ?? [],
         })
         .eq("id", id)
         .select()

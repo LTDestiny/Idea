@@ -14,7 +14,8 @@ export default async function HomePage() {
       *,
       profiles!creator_id(*),
       comments(count),
-      join_requests(count)
+      join_requests(count),
+      idea_likes(count)
     `,
     )
     .order("created_at", { ascending: false });

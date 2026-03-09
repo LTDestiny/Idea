@@ -14,6 +14,7 @@ interface CommentListProps {
     content: string,
     parentId: string,
     replyToUserId?: string,
+    imageUrl?: string,
   ) => Promise<{ error: unknown }>;
   isAuthenticated?: boolean;
 }
@@ -66,6 +67,7 @@ const CommentItem = memo(function CommentItem({
     content: string,
     parentId: string,
     replyToUserId?: string,
+    imageUrl?: string,
   ) => Promise<{ error: unknown }>;
   isAuthenticated?: boolean;
   depth?: number;
@@ -78,9 +80,9 @@ const CommentItem = memo(function CommentItem({
   const mentionName =
     depth > 0 ? comment.profiles?.full_name || "Anonymous" : undefined;
 
-  const handleReply = async (content: string) => {
+  const handleReply = async (content: string, imageUrl?: string) => {
     if (!onReply) return { error: new Error("No reply handler") };
-    return onReply(content, replyParentId, comment.user_id);
+    return onReply(content, replyParentId, comment.user_id, imageUrl);
   };
 
   return (
@@ -99,6 +101,18 @@ const CommentItem = memo(function CommentItem({
           <p className="text-sm mt-1 whitespace-pre-wrap break-words">
             {renderContent(comment.content)}
           </p>
+
+          {/* Attached image */}
+          {comment.image_url && (
+            <a href={comment.image_url} target="_blank" rel="noopener noreferrer" className="block mt-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={comment.image_url}
+                alt="Attached image"
+                className="max-h-48 rounded-md border object-cover hover:opacity-90 transition-opacity"
+              />
+            </a>
+          )}
 
           {/* Reply button — available on all comments */}
           {isAuthenticated && onReply && (
